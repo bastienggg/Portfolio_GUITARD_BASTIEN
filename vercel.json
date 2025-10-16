@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "name": "portfolio-bastien-guitard",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_SITE_URL": "https://bastien-guitard.vercel.app"
+  }
+}
