@@ -1,9 +1,8 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import AlbumCard from "./AlbumCard";
-import AlbumViewer from "./AlbumViewer";
 
 interface Album {
   name: string;
@@ -19,14 +18,10 @@ interface AlbumGridProps {
 }
 
 export default function AlbumGrid({ albums }: AlbumGridProps) {
-  const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleAlbumClick = (slug: string) => {
-    setSelectedAlbum(slug);
-  };
-
-  const handleCloseViewer = () => {
-    setSelectedAlbum(null);
+    router.push(`/galerie/${slug}`);
   };
 
   return (
@@ -153,13 +148,6 @@ export default function AlbumGrid({ albums }: AlbumGridProps) {
           )}
         </div>
       </motion.div>
-
-      {/* Viewer d'album en modal */}
-      <AnimatePresence>
-        {selectedAlbum && (
-          <AlbumViewer albumSlug={selectedAlbum} onClose={handleCloseViewer} />
-        )}
-      </AnimatePresence>
     </>
   );
 }

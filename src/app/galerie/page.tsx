@@ -1,5 +1,5 @@
 ﻿import type { Metadata } from "next";
-import AlbumGrid from "@/components/AlbumGrid";
+import AlbumList from "@/components/AlbumList";
 import { getAlbums } from "@/lib/gallery";
 
 export const metadata: Metadata = {
@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 export default async function GalleryPage() {
   const albums = await getAlbums();
 
-  return <AlbumGrid albums={albums} />;
+  return <AlbumList albums={albums} />;
 }

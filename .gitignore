@@ -49,3 +49,5 @@ docker-compose.prod.yml
 DEPLOY-SERVER.md
 DOCKER-GUIDE.md
     
+#photo gallery
+/public/gallery/*
