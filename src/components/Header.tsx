@@ -9,7 +9,7 @@ import { useState } from "react";
 const navigation = [
   { name: "Accueil", href: "/" },
   { name: "Projets", href: "/projets" },
-  // { name: "Galerie", href: "/galerie" },
+  { name: "Galerie", href: "/galerie" },
   { name: "CV", href: "/cv" },
   { name: "Contact", href: "/contact" },
 ];

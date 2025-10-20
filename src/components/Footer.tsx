@@ -32,12 +32,12 @@ export default function Footer() {
               >
                 Projets
               </Link>
-              {/* <Link
+              <Link
                 href="/galerie"
                 className="block text-sm text-foreground/60 hover:text-foreground transition-colors"
               >
                 Galerie
-              </Link> */}
+              </Link>
               <Link
                 href="/cv"
                 className="block text-sm text-foreground/60 hover:text-foreground transition-colors"

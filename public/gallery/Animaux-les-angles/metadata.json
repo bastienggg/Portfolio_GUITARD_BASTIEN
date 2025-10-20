@@ -1,0 +1,22 @@
+{
+  "album": {
+    "name": "Animaux les Angles",
+    "description": "Exploration de la faune dans les paysages des Angles.",
+    "category": "Nature",
+    "cover": null
+  },
+  "photos": {
+    "exemple-animal-1.jpg": {
+      "title": "Chamois dans les Montagnes",
+      "description": "Un chamois observant son environnement depuis un rocher escarpé.",
+      "date": "2025-10-10",
+      "tags": ["chamois", "montagne", "faune", "nature"]
+    },
+    "exemple-animal-2.jpg": {
+      "title": "Aigle Royal en Vol",
+      "description": "Un aigle royal majestueux capturé en plein vol au-dessus des vallées.",
+      "date": "2025-10-12",
+      "tags": ["aigle", "vol", "rapace", "nature"]
+    }
+  }
+}

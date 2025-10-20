@@ -274,3 +274,92 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 🐙 GitHub : [github.com/bastienggg](https://github.com/bastienggg)
 
 > **⚠️ N'oubliez pas de remplacer toutes les informations personnelles par les vôtres !**
+
+## 🐳 Docker — Builder et publier sur Docker Hub
+
+### Prérequis
+
+- Docker Desktop installé et lancé
+- Compte Docker Hub (créez-en un sur [hub.docker.com](https://hub.docker.com))
+
+### Option 1 : Avec Docker Compose (recommandé)
+
+**1. Lancer l'application localement**
+
+```powershell
+docker-compose up --build
+```
+
+L'application sera accessible sur [http://localhost:3000](http://localhost:3000)
+
+**2. Arrêter l'application**
+
+```powershell
+docker-compose down
+```
+
+### Option 2 : Avec Docker CLI
+
+**1. Construire l'image localement**
+
+```powershell
+# Remplacez bastienggg par votre username Docker Hub
+docker build -t bastienggg/portfolio-guitard:latest .
+```
+
+**2. Lancer l'image localement**
+
+```powershell
+docker run -d -p 3000:3000 --name portfolio bastienggg/portfolio-guitard:latest
+```
+
+**3. Vérifier que le container tourne**
+
+```powershell
+docker ps
+```
+
+### 📤 Publier sur Docker Hub
+
+**1. Se connecter à Docker Hub**
+
+```powershell
+docker login
+# Entrez votre username et password Docker Hub
+```
+
+**2. Taguer votre image (optionnel mais recommandé)**
+
+```powershell
+# Tag avec version spécifique
+docker tag bastienggg/portfolio-guitard:latest bastienggg/portfolio-guitard:v1.0.0
+```
+
+**3. Pousser l'image sur Docker Hub**
+
+```powershell
+# Push latest
+docker push bastienggg/portfolio-guitard:latest
+
+# Push version spécifique (si taguée)
+docker push bastienggg/portfolio-guitard:v1.0.0
+```
+
+**4. Vérifier sur Docker Hub**
+
+Allez sur `https://hub.docker.com/r/bastienggg/portfolio-guitard` pour voir votre image publiée.
+
+### 🚀 Utiliser l'image depuis Docker Hub
+
+Une fois publiée, n'importe qui peut lancer votre portfolio avec :
+
+```powershell
+docker pull bastienggg/portfolio-guitard:latest
+docker run -d -p 3000:3000 bastienggg/portfolio-guitard:latest
+```
+
+### 📝 Notes importantes
+
+- Le `Dockerfile` utilise une build multi-stage pour garder l'image finale compacte (~150-200 MB)
+- Assurez-vous d'avoir votre `cv.pdf` et toutes les images dans `public/` avant de builder
+- Pour mettre à jour : rebuilder l'image, taguer avec une nouvelle version, puis push

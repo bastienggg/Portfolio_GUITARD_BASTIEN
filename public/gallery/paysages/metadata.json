@@ -1,0 +1,22 @@
+{
+  "album": {
+    "name": "Paysages Naturels",
+    "description": "Une collection de paysages naturels capturés lors de mes voyages et randonnées.",
+    "category": "Paysage",
+    "cover": null
+  },
+  "photos": {
+    "exemple-montagne.jpg": {
+      "title": "Sommet des Alpes",
+      "description": "Vue panoramique depuis le sommet d'un pic alpin au lever du soleil.",
+      "date": "2025-09-20",
+      "tags": ["montagne", "alpes", "lever de soleil", "panorama", "neige"]
+    },
+    "exemple-lac.jpg": {
+      "title": "Lac de Montagne",
+      "description": "Reflets parfaits dans un lac de montagne cristallin.",
+      "date": "2025-09-18",
+      "tags": ["lac", "reflets", "eau", "montagne", "sérénité"]
+    }
+  }
+}
