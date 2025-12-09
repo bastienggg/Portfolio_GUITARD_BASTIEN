@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import * as THREE from "three";
 import projects from "@/data/projects.json";
 
@@ -17,6 +17,135 @@ interface Project {
   imageUrl: string;
   status: string;
   featured?: boolean;
+}
+
+// Composant Particules de Galaxie
+function GalaxyParticles() {
+  const particlesRef = useRef<THREE.Points>(null);
+
+  // Créer les particules en spirale galactique
+  const particlesGeometry = useMemo(() => {
+    const geometry = new THREE.BufferGeometry();
+    const particlesCount = 25000; // Plus de particules
+    const positions = new Float32Array(particlesCount * 3);
+    const colors = new Float32Array(particlesCount * 3);
+
+    for (let i = 0; i < particlesCount; i++) {
+      const i3 = i * 3;
+
+      // Déterminer le type de particule (spirale, nuage, ou dispersion)
+      const particleType = Math.random();
+
+      let x, y, z;
+
+      if (particleType < 0.5) {
+        // 50% - Bras de spirale avec clustering
+        const radius = Math.random() * 150;
+        const spinAngle = radius * 0.5;
+        const branchAngle = ((i % 3) / 3) * Math.PI * 2;
+
+        // Clustering - concentrer les particules par endroits
+        const clusterIntensity = Math.sin(radius * 0.1) * 10;
+
+        const randomX =
+          Math.pow(Math.random(), 2) *
+          (Math.random() < 0.5 ? 1 : -1) *
+          (15 + clusterIntensity);
+        const randomY =
+          Math.pow(Math.random(), 2) *
+          (Math.random() < 0.5 ? 1 : -1) *
+          (20 + clusterIntensity);
+        const randomZ =
+          Math.pow(Math.random(), 2) *
+          (Math.random() < 0.5 ? 1 : -1) *
+          (15 + clusterIntensity);
+
+        x = Math.cos(branchAngle + spinAngle) * radius + randomX;
+        y = randomY;
+        z = Math.sin(branchAngle + spinAngle) * radius + randomZ;
+      } else if (particleType < 0.75) {
+        // 25% - Nuages/nébuleuses sphériques à différents endroits
+        const cloudIndex = Math.floor(Math.random() * 5); // 5 nuages
+        const cloudAngle = (cloudIndex / 5) * Math.PI * 2;
+        const cloudDistance = 40 + Math.random() * 60;
+
+        const cloudCenterX = Math.cos(cloudAngle) * cloudDistance;
+        const cloudCenterY = (Math.random() - 0.5) * 30;
+        const cloudCenterZ = Math.sin(cloudAngle) * cloudDistance;
+
+        // Distribution gaussienne pour effet nuage
+        const cloudRadius = 15 + Math.random() * 10;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        const r = Math.pow(Math.random(), 0.5) * cloudRadius;
+
+        x = cloudCenterX + r * Math.sin(phi) * Math.cos(theta);
+        y = cloudCenterY + r * Math.sin(phi) * Math.sin(theta);
+        z = cloudCenterZ + r * Math.cos(phi);
+      } else {
+        // 25% - Particules dispersées aléatoirement (effet poussière cosmique)
+        const radius = Math.random() * 180;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+
+        x = radius * Math.sin(phi) * Math.cos(theta);
+        y = radius * Math.sin(phi) * Math.sin(theta);
+        z = radius * Math.cos(phi);
+      }
+
+      positions[i3] = x;
+      positions[i3 + 1] = y;
+      positions[i3 + 2] = z;
+
+      // Couleurs cyberpunk - cyan, blanc, bleu foncé
+      const mixedColor = new THREE.Color();
+      const cyanColor = new THREE.Color("#22d3ee"); // Cyan
+      const whiteColor = new THREE.Color("#ffffff"); // Blanc
+      const darkCyanColor = new THREE.Color("#0a4d5c"); // Cyan foncé
+
+      const randomValue = Math.random();
+
+      if (randomValue < 0.35) {
+        mixedColor.copy(cyanColor);
+      } else if (randomValue < 0.55) {
+        mixedColor.copy(whiteColor);
+      } else if (randomValue < 0.8) {
+        mixedColor.copy(darkCyanColor);
+      } else {
+        mixedColor.lerpColors(cyanColor, whiteColor, Math.random());
+      }
+
+      colors[i3] = mixedColor.r;
+      colors[i3 + 1] = mixedColor.g;
+      colors[i3 + 2] = mixedColor.b;
+    }
+
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+    return geometry;
+  }, []);
+
+  // Animation de rotation lente de la galaxie
+  useFrame(() => {
+    if (particlesRef.current) {
+      particlesRef.current.rotation.y += 0.0002;
+    }
+  });
+
+  return (
+    <points ref={particlesRef} geometry={particlesGeometry}>
+      <pointsMaterial
+        size={0.2}
+        vertexColors
+        transparent
+        opacity={0.65}
+        sizeAttenuation
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
 }
 
 // Composant Soleil
@@ -418,6 +547,9 @@ function Scene({
       <pointLight position={[0, 0, 0]} intensity={2} color="#FDB813" />
       <pointLight position={[50, 50, 50]} intensity={1.5} />
       <pointLight position={[-30, -20, -30]} intensity={0.8} color="#6366f1" />
+
+      {/* Particules de galaxie */}
+      <GalaxyParticles />
 
       {/* Soleil au centre */}
       <Sun />

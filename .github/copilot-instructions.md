@@ -17,10 +17,14 @@ Le portfolio se compose d'une **seule page** : un système solaire 3D où chaque
 
 - `SolarSystemScene.tsx` : Composant principal du portfolio 3D
   - Système solaire avec planètes orbitales
-  - Split-screen : terminal (50% gauche) + canvas 3D (50% droite)
+  - Split-screen responsive :
+    - **Desktop** : Terminal (30% gauche) + Canvas 3D (70% droite)
+    - **Mobile** : Canvas 3D (50% haut) + Terminal (50% bas)
+  - **Terminal interactif** avec commandes shell
   - Typewriter effect pour l'affichage des projets
   - Animations de caméra avec arcs paraboliques
   - Navigation par scroll ou clic sur les labels
+  - Fenêtre de contact (desktop uniquement)
 
 ### Données
 
@@ -139,11 +143,20 @@ Les projets sont stockés dans `/src/data/projects.json` avec la structure suiva
 ### Styles
 
 - Utiliser Tailwind CSS avec les classes utilitaires
-- Couleurs principales :
-  - Background : `#0a1929` (dark blue)
-  - Accents : `text-cyan-400`, `text-white`
-  - Terminal : noir et blanc monochrome
-- Design system minimaliste et épuré
+- **Design system cyberpunk** :
+  - Noir profond partout (`bg-black`)
+  - Accents cyan néon (`text-cyan-400`, `border-cyan-400`)
+  - Effets glow avec `shadow-[0_0_*px_rgba(34,211,238,*)]`
+  - Typography mono-espacée (font-mono)
+  - Uppercase pour les titres importants
+- **Responsive** :
+  - Desktop : `md:` breakpoint (768px+)
+  - Mobile-first avec Flexbox column
+  - Tailles adaptatives : `text-xs md:text-sm`, `p-6 md:p-10`
+- **Interactions** :
+  - `cursor-pointer` sur éléments cliquables
+  - `hover:bg-white/5` pour feedback subtil
+  - Transitions avec `transition-all` ou `transition-colors`
 
 ### Fichiers et organisation
 
