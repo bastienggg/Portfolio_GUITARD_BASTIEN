@@ -1,0 +1,87 @@
+[
+  {
+    "id": "dot-txt",
+    "title": "Dot TXT",
+    "description": "Une aplication de prise de note collaborative en temps réel. Le projet à été selctionner pour être utiliser au seins de l'université de Limoges",
+    "longDescription": "Une application de prise de note collaborative en temps réel inspirée de Google Docs. Elle permet à plusieurs utilisateurs de créer, modifier et organiser des notes simultanément avec une synchronisation instantanée.",
+    "technologies": [
+      "Next.js",
+      "TypeScript",
+      "React.js",
+      "Pinia",
+      "Socket.io",
+      "Node.js",
+      "Docker"
+    ],
+    "githubUrl": "https://github.com/bastienggg/Dot_TXT",
+    "demoUrl": "https://dot-txt.fr",
+    "imageUrl": "/projects/dottxt.png",
+    "status": "in-progress",
+    "featured": true
+  },
+  {
+    "id": "trois-fois-rien",
+    "title": "Trois Fois Rien",
+    "description": "Un site de presentation pour Trois fois rien un collectif de designers qui imagine et fabrique des projets culturels accessibles, créatifs et ancrés dans le réel.",
+    "longDescription": "Un site de presentation pour Trois fois rien un collectif de designers qui imagine et fabrique des projets culturels accessibles, créatifs et ancrés dans le réel.",
+    "technologies": [
+      "Next.js",
+      "TypeScript",
+      "React.js",
+      "NeonDB",
+      "Prisma",
+      "TailwindCSS",
+      "Framer Motion",
+      "Figma"
+    ],
+    "githubUrl": "https://github.com/bastienggg",
+    "demoUrl": "https://github.com/bastienggg",
+    "imageUrl": "/projects/troisfoisrien.png",
+    "status": "in-progress",
+    "featured": true
+  },
+  {
+    "id": "habit-tracker",
+    "title": "Ha'Bitz",
+    "description": "Une aplication de suivi des habitudes pour vous aider à atteindre vos objectifs quotidiens.",
+    "longDescription": "Une application de suivi des habitudes qui permet aux utilisateurs de définir, suivre et analyser leurs habitudes quotidiennes. L'application offre des rappels, des statistiques et des graphiques pour aider les utilisateurs à rester motivés et à atteindre leurs objectifs.",
+    "technologies": ["Next.js", "TypeScript", "React.js", "NeonDB", "Prisma"],
+    "githubUrl": "https://github.com/bastienggg/Habit_Tracker",
+    "demoUrl": "https://habit-tracker-beige-psi.vercel.app/",
+    "imageUrl": "/projects/habittracker.png",
+    "status": "in-progress",
+    "featured": false
+  },
+
+  {
+    "id": "jeu-3d-webgl",
+    "title": "Let Him Quizz",
+    "description": "Un jeu 3D interactif développé avec Three.js et A-Frame.",
+    "longDescription": "Un jeu 3D immersif jouable en VR qui a pour but de faire apprendre l'anglais grâce à une suite de mini jeux. Ce jeu a été inspiré par des jeux TV du style Question pour un champion.",
+    "technologies": [
+      "Three.js",
+      "A-Frame",
+      "WebGL",
+      "JavaScript",
+      "HTML",
+      "CSS"
+    ],
+    "githubUrl": "https://github.com/bastienggg/Let_him_quizz",
+    "demoUrl": "https://lethimquiz.bastienguitard.fr",
+    "imageUrl": "/projects/lethimquizz.png",
+    "status": "completed",
+    "featured": false
+  },
+  {
+    "id": "zippy",
+    "title": "Zippy The Mouse",
+    "description": "Projet gagant de La Nuit MMI 2025, ou le but etais de faire un jeu 2D en 24h",
+    "longDescription": "Un jeu 2D developper en javascrit avec P5Play.js qui sert à faire de la prévention contre la pullution digital.Dans Ce je on incarne Zippy une petite souris qui lutter contre malware et mail frauduleux",
+    "technologies": ["JavaScript", "HTML", "CSS", "P5Play.js", "Tailwind"],
+    "githubUrl": "https://github.com/bastienggg/ZippyTheMouse",
+    "demoUrl": "https://zippy.bastienguitard.fr",
+    "imageUrl": "/projects/zippy.png",
+    "status": "completed",
+    "featured": false
+  }
+]

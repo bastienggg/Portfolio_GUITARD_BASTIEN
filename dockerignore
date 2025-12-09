@@ -1,0 +1,11 @@
+node_modules
+.next
+dist
+.turbo
+pnpm-lock.yaml
+*.log
+.env
+.env.local
+.DS_Store
+/.vscode
+public/projects/*.jpg

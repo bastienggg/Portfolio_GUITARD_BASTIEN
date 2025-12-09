@@ -6,8 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import ProjectCard from "@/components/ProjectCard";
 import MatrixRain from "@/components/MatrixRain";
-import { featuredProjects } from "@/data/featuredRepos";
+import FloatingCards3D from "@/components/FloatingCards3D";
+import { getFeaturedProjects } from "@/data/featuredRepos";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import {
   ArrowRight,
   Download,
@@ -20,7 +22,18 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  const featuredProjectsHome = featuredProjects.slice(0, 2);
+  const featuredProjectsHome = getFeaturedProjects();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Détecter si on est sur mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Animation variants pour le texte
   const letterVariants = {
@@ -277,13 +290,18 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            {featuredProjectsHome.map((project) => (
-              <ProjectCard key={project.id} project={project} featured />
-            ))}
-          </div>
+          {/* Version 3D pour desktop, grille classique pour mobile */}
+          {isMobile ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+              {featuredProjectsHome.map((project) => (
+                <ProjectCard key={project.id} project={project} featured />
+              ))}
+            </div>
+          ) : (
+            <FloatingCards3D projects={featuredProjectsHome} />
+          )}
 
-          <div className="text-center">
+          <div className="text-center mt-12">
             <Button size="lg" variant="outline" asChild>
               <Link href="/projets">
                 Voir tous mes projets

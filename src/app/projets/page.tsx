@@ -1,15 +1,6 @@
 import type { Metadata } from "next";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import ProjectCard from "@/components/ProjectCard";
-import { featuredProjects, getProjectsByStatus } from "@/data/featuredRepos";
-import { Code, Lightbulb, Target } from "lucide-react";
+import { featuredProjects } from "@/data/featuredRepos";
 
 export const metadata: Metadata = {
   title: "Projets",
@@ -18,10 +9,6 @@ export const metadata: Metadata = {
 };
 
 export default function ProjectsPage() {
-  const completedProjects = getProjectsByStatus("completed");
-  const inProgressProjects = getProjectsByStatus("in-progress");
-  const plannedProjects = getProjectsByStatus("planned");
-
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -47,20 +34,18 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      {/* Projets terminés */}
-      {completedProjects.length > 0 && (
-        <section className="py-20">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {completedProjects.map((project) => (
-                  <ProjectCard key={project.id} project={project} featured />
-                ))}
-              </div>
+      {/* Tous les projets */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {featuredProjects.map((project) => (
+                <ProjectCard key={project.id} project={project} featured />
+              ))}
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Call to action */}
       <section className="py-20">
