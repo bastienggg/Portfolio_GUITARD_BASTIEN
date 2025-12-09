@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function Portfolio3DPage() {
   return (
-    <main className="w-full h-screen" style={{ backgroundColor: "#0a1929" }}>
+    <main className="w-full h-screen bg-black">
       <SolarSystemScene />
     </main>
   );

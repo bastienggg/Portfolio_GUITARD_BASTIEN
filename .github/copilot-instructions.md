@@ -2,7 +2,29 @@
 
 ## Vue d'ensemble du projet
 
-Ce projet est un portfolio personnel développé avec Next.js 15, TypeScript et Tailwind CSS. Il présente mes projets, mon CV, une galerie photo et un formulaire de contact.
+Ce projet est un portfolio 3D développé avec Next.js 15, TypeScript, Tailwind CSS et React Three Fiber. Il présente mes projets sous forme d'un système solaire interactif avec une expérience immersive en 3D.
+
+## Architecture du projet
+
+Le portfolio se compose d'une **seule page** : un système solaire 3D où chaque planète représente un projet.
+
+### Structure simplifiée
+
+- **Page d'accueil** (`/`) : Redirige automatiquement vers `/portfolio3d`
+- **Portfolio 3D** (`/portfolio3d`) : Expérience interactive principale
+
+### Composants
+
+- `SolarSystemScene.tsx` : Composant principal du portfolio 3D
+  - Système solaire avec planètes orbitales
+  - Split-screen : terminal (50% gauche) + canvas 3D (50% droite)
+  - Typewriter effect pour l'affichage des projets
+  - Animations de caméra avec arcs paraboliques
+  - Navigation par scroll ou clic sur les labels
+
+### Données
+
+- `projects.json` : Seule source de données, contient tous les projets
 
 ## Projets principaux
 
@@ -57,44 +79,97 @@ Les projets sont stockés dans `/src/data/projects.json` avec la structure suiva
 }
 ```
 
+## Système de navigation 3D
+
+### Fonctionnement
+
+- **Mode Overview** (scrollProgress = -1) : Vue d'ensemble avec présentation personnelle
+- **Mode Projet** (scrollProgress = 0+) : Chaque position correspond à un projet/planète
+- **Navigation** :
+  - Scroll sur le canvas 3D pour changer de planète
+  - Clic sur les labels 3D flottants
+  - Animation de transition avec arc parabolique (8 _ sin(t _ π))
+
+### Caméra
+
+- Position frontale : `planetPos + direction * 20`
+- Élévation légère : `planetPos.y + 3`
+- Easing factor : 0.08 pour fluidité
+- Debounce scroll : 800ms
+
+### Terminal
+
+- **Style** : Noir et blanc avec titres en cyan (`text-cyan-400`)
+- **Animation typewriter** : 5ms par caractère
+- **Format** :
+
+  ```
+  > PROJECT_LOADED
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━
+  TITRE DU PROJET (en cyan)
+  ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  > description:
+    [Description du projet]
+
+  > technologies:
+    [React] [Node.js] [etc.]
+
+  > status: completed
+
+  > ready_
+  ```
+
 ## Conventions de code
 
 ### Composants
 
 - Utiliser des composants fonctionnels TypeScript avec typage strict
-- Privilégier les Server Components Next.js par défaut
-- Utiliser les Client Components uniquement quand nécessaire (interactivité, hooks)
+- Client Components pour l'interactivité 3D (`"use client"`)
 - Suivre la structure: props interface → component → exports
+
+### React Three Fiber
+
+- Utiliser `useFrame` pour les animations frame-by-frame
+- `useRef` pour les références de caméra et contrôles
+- `THREE.Vector3` et quaternions pour les calculs 3D
+- Billboard text avec `quaternion.copy(camera.quaternion)`
 
 ### Styles
 
 - Utiliser Tailwind CSS avec les classes utilitaires
-- Suivre le design system défini dans les composants UI (shadcn/ui)
-- Responsive-first design (mobile → desktop)
+- Couleurs principales :
+  - Background : `#0a1929` (dark blue)
+  - Accents : `text-cyan-400`, `text-white`
+  - Terminal : noir et blanc monochrome
+- Design system minimaliste et épuré
 
 ### Fichiers et organisation
 
-- `src/app/`: Routes Next.js (App Router)
-- `src/components/`: Composants réutilisables
-- `src/data/`: Données statiques (JSON, constantes)
-- `src/lib/`: Utilitaires et helpers
-- `public/`: Assets statiques (images, etc.)
-
-### Gestion des images
-
-- Images des projets stockées dans `/public/projects/`
-- Utiliser le composant `next/image` pour l'optimisation
-- Format recommandé: PNG ou WebP
-- Prévoir des images en aspect ratio 16:9 pour les cartes de projets
+- `src/app/` : Routes Next.js (App Router)
+  - `page.tsx` : Redirection vers `/portfolio3d`
+  - `portfolio3d/page.tsx` : Page principale
+  - `layout.tsx` : Layout simplifié sans header/footer
+- `src/components/` : Composants réutilisables
+  - `SolarSystemScene.tsx` : Le seul composant principal
+  - `ui/` : shadcn/ui components de base
+- `src/data/` : Données statiques
+  - `projects.json` : Tous les projets
+- `src/lib/` : Utilitaires
+  - `utils.ts` : Helpers Tailwind
 
 ## Bonnes pratiques
 
-1. **Accessibilité**: Toujours inclure des attributs alt, aria-labels appropriés
-2. **SEO**: Utiliser les metadata Next.js pour chaque page
-3. **Performance**: Optimiser les images, lazy loading, code splitting
-4. **TypeScript**: Typage strict, éviter `any`, utiliser les interfaces
-5. **Git**: Commits clairs et atomiques en français
-6. **Données**: Privilégier les fichiers JSON pour la configuration des projets plutôt que le code en dur
+1. **Performance 3D** :
+   - Optimiser le nombre de vertices
+   - Utiliser `useMemo` pour les géométries
+   - Limiter les recalculs dans `useFrame`
+2. **Accessibilité** : Labels clairs, navigation au clavier si possible
+3. **SEO** : Metadata Next.js appropriées
+4. **TypeScript** : Typage strict, interfaces pour les props 3D
+5. **Git** : Commits clairs et atomiques en français
+6. **Animation** : Utiliser requestAnimationFrame pour la fluidité
 
 ## Ajout d'un nouveau projet
 
@@ -102,12 +177,14 @@ Pour ajouter un nouveau projet:
 
 1. Ajouter l'image dans `/public/projects/`
 2. Ajouter l'entrée dans `/src/data/projects.json`
-3. Les composants chargeront automatiquement le nouveau projet
+3. Le système solaire créera automatiquement une nouvelle planète
 
 ## Technologies principales
 
-- Framework: Next.js 15 (App Router)
-- Langage: TypeScript
-- Styles: Tailwind CSS
-- UI: shadcn/ui components
-- Deployment: Vercel
+- Framework : Next.js 15 (App Router)
+- Langage : TypeScript
+- 3D : React Three Fiber (@react-three/fiber, @react-three/drei)
+- Math 3D : Three.js (Vector3, quaternions, etc.)
+- Styles : Tailwind CSS
+- UI : shadcn/ui components
+- Deployment : Vercel

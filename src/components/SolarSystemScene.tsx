@@ -320,7 +320,7 @@ function Scene({
 
         // Position overview - beaucoup plus loin pour voir tout le système
         currentCameraPos = new THREE.Vector3(120, 80, 120);
-        currentTarget = new THREE.Vector3(-400, -250, 0);
+        currentTarget = new THREE.Vector3(0, 0, 0);
 
         // Position première planète
         const firstPlanetPos = new THREE.Vector3(...planetPositions[0]);
@@ -587,103 +587,66 @@ export default function SolarSystemScene() {
   }, [currentProject, isOverviewMode]);
 
   return (
-    <div className="w-full h-screen flex">
-      {/* Zone Terminal/Card à gauche - 50% */}
-      <div className="w-1/2 h-full bg-black border-r-2 border-white relative overflow-hidden">
-        {isOverviewMode ? (
-          // Présentation initiale - style terminal noir et blanc
-          <div className="p-10 h-full flex flex-col justify-center font-mono text-white relative">
-            <div className="mb-8">
-              <span className="text-gray-500 text-sm">&gt; SYSTEM_ONLINE</span>
-            </div>
+    <div className="w-full h-screen flex flex-col md:flex-row bg-black">
+      {/* Fenêtre Terminal - Mobile: en bas | Desktop: à gauche 30% - Style Cyberpunk */}
+      <div className="w-full h-1/2 md:w-[30%] md:h-full order-2 md:order-1 bg-black relative overflow-hidden border-t-2 md:border-t-0 md:border-r-2 border-cyan-400/30">
+        {/* Barre de titre cyberpunk */}
+        <div className="h-10 bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-cyan-400/50 flex items-center px-4 relative">
+          {/* Effet glow */}
+          <div className="absolute inset-0 bg-cyan-400/5"></div>
 
-            <h1 className="text-6xl font-bold text-cyan-400 mb-2 tracking-wider uppercase">
-              BASTIEN GUITARD
-            </h1>
-            <span className="text-gray-500 mb-8">
-              ========================================
-            </span>
-
-            <div className="mb-4">
-              <span className="text-gray-500">&gt; role:</span>
-              <span className="text-white ml-2">
-                DÉVELOPPEUR FULL-STACK & CRÉATIF
-              </span>
-            </div>
-
-            <div className="mb-8">
-              <span className="text-gray-500">&gt; message:</span>
-              <p className="text-gray-300 mt-2 leading-relaxed">
-                Bienvenue dans mon univers ! Explorez mes projets à travers ce
-                système solaire interactif. Chaque planète représente une
-                création unique mêlant technologie et créativité.
-              </p>
-            </div>
-
-            <div className="text-gray-400 text-sm animate-pulse">
-              <span>&gt; Scroll ou Click sur les titres pour explorer_</span>
-            </div>
-
-            {/* Effet scanline */}
-            <div
-              className="absolute inset-0 pointer-events-none opacity-10"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(0deg, transparent, transparent 2px, white 2px, white 4px)",
-              }}
-            ></div>
+          <div className="flex gap-2 z-10">
+            <div className="w-2 h-2 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
+            <div className="w-2 h-2 bg-cyan-400/50"></div>
+            <div className="w-2 h-2 bg-cyan-400/50"></div>
           </div>
-        ) : (
-          // Terminal de projet avec animation typewriter - noir et blanc
-          currentProject && (
-            <div className="p-10 h-full font-mono text-white overflow-y-auto relative">
-              {/* Texte qui s'écrit avec titre en couleur */}
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed">
-                {terminalText.split("\n").map((line, i) => {
-                  // Colorer le titre du projet (ligne après les ━)
-                  const isTitle = line === currentProject.title.toUpperCase();
-                  return (
-                    <span key={i}>
-                      {isTitle ? (
-                        <span className="text-cyan-400 font-bold">{line}</span>
-                      ) : (
-                        line
-                      )}
-                      {i < terminalText.split("\n").length - 1 && "\n"}
-                    </span>
-                  );
-                })}
-                {isTyping && (
-                  <span className="animate-pulse text-cyan-400">█</span>
-                )}
-              </pre>
+          <div className="flex-1 text-center z-10">
+            <span className="text-cyan-400 text-xs font-mono tracking-widest">
+              {isOverviewMode
+                ? "[ SYSTEM ]"
+                : `[ ${currentProject?.title.toUpperCase() || "PROJECT"} ]`}
+            </span>
+          </div>
+          <div className="text-cyan-400/50 text-xs font-mono z-10">▼</div>
+        </div>
 
-              {/* Boutons affichés seulement quand l'animation est terminée */}
-              {!isTyping &&
-                (currentProject.githubUrl || currentProject.demoUrl) && (
-                  <div className="mt-8 flex gap-4">
-                    {currentProject.githubUrl && (
-                      <a
-                        href={currentProject.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-4 py-2 border-2 border-white text-white hover:bg-white hover:text-black transition-all"
-                      >
-                        &gt; GITHUB
-                      </a>
-                    )}
-                    {currentProject.demoUrl && (
-                      <a
-                        href={currentProject.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-4 py-2 bg-white text-black hover:bg-gray-200 transition-all"
-                      >
-                        &gt; DEMO
-                      </a>
-                    )}
-                  </div>
-                )}
+        {/* Contenu du terminal */}
+        <div className="h-[calc(100%-2.5rem)] overflow-hidden relative">
+          {isOverviewMode ? (
+            // Présentation initiale - style terminal noir et blanc
+            <div className="p-6 md:p-10 h-full flex flex-col justify-center font-mono text-white relative">
+              <div className="mb-6 md:mb-8">
+                <span className="text-gray-500 text-sm">
+                  &gt; SYSTEM_ONLINE
+                </span>
+              </div>
+
+              <h1 className="text-4xl md:text-6xl font-bold text-cyan-400 mb-2 tracking-wider uppercase">
+                BASTIEN GUITARD
+              </h1>
+              <span className="text-gray-500 mb-6 md:mb-8">
+                ========================================
+              </span>
+
+              <div className="mb-4">
+                <span className="text-gray-500">&gt; role:</span>
+                <span className="text-white ml-2 text-sm md:text-base">
+                  DÉVELOPPEUR FULL-STACK & CRÉATIF
+                </span>
+              </div>
+
+              <div className="mb-6 md:mb-8">
+                <span className="text-gray-500">&gt; message:</span>
+                <p className="text-gray-300 mt-2 leading-relaxed text-sm md:text-base">
+                  Bienvenue dans mon univers ! Explorez mes projets à travers ce
+                  système solaire interactif. Chaque planète représente une
+                  création unique mêlant technologie et créativité.
+                </p>
+              </div>
+
+              <div className="text-gray-400 text-xs md:text-sm animate-pulse">
+                <span>&gt; Scroll ou Click sur les titres pour explorer_</span>
+              </div>
 
               {/* Effet scanline */}
               <div
@@ -694,40 +657,191 @@ export default function SolarSystemScene() {
                 }}
               ></div>
             </div>
-          )
-        )}
+          ) : (
+            // Terminal de projet avec animation typewriter - noir et blanc
+            currentProject && (
+              <div className="p-6 md:p-10 h-full font-mono text-white overflow-y-auto relative">
+                {/* Texte qui s'écrit avec titre en couleur */}
+                <pre className="whitespace-pre-wrap text-xs md:text-sm leading-relaxed">
+                  {terminalText.split("\n").map((line, i) => {
+                    // Colorer le titre du projet (ligne après les ━)
+                    const isTitle = line === currentProject.title.toUpperCase();
+                    return (
+                      <span key={i}>
+                        {isTitle ? (
+                          <span className="text-cyan-400 font-bold">
+                            {line}
+                          </span>
+                        ) : (
+                          line
+                        )}
+                        {i < terminalText.split("\n").length - 1 && "\n"}
+                      </span>
+                    );
+                  })}
+                  {isTyping && (
+                    <span className="animate-pulse text-cyan-400">█</span>
+                  )}
+                </pre>
+
+                {/* Boutons affichés seulement quand l'animation est terminée */}
+                {!isTyping &&
+                  (currentProject.githubUrl || currentProject.demoUrl) && (
+                    <div className="mt-6 md:mt-8 flex flex-col md:flex-row gap-3 md:gap-4">
+                      {currentProject.githubUrl && (
+                        <a
+                          href={currentProject.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 md:px-4 py-2 text-sm md:text-base border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
+                        >
+                          &gt; GITHUB
+                        </a>
+                      )}
+                      {currentProject.demoUrl && (
+                        <a
+                          href={currentProject.demoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 md:px-4 py-2 text-sm md:text-base bg-cyan-400 text-black hover:bg-cyan-300 transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
+                        >
+                          &gt; DEMO
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                {/* Effet scanline */}
+                <div
+                  className="absolute inset-0 pointer-events-none opacity-10"
+                  style={{
+                    backgroundImage:
+                      "repeating-linear-gradient(0deg, transparent, transparent 2px, white 2px, white 4px)",
+                  }}
+                ></div>
+              </div>
+            )
+          )}
+        </div>
       </div>
 
-      {/* Canvas 3D à droite - 50% */}
-      <div className="w-1/2 h-full relative">
-        <Canvas
-          camera={{ position: [120, 80, 120], fov: 75 }}
-          onCreated={({ camera }) => {
-            (camera as any).ref = camera;
-          }}
-        >
-          <Scene
-            scrollProgress={scrollProgress}
-            mousePosition={mousePosition}
-            onNavigateToPlanet={navigateToPlanet}
-          />
-        </Canvas>
+      {/* Fenêtre Canvas 3D - Mobile: en haut | Desktop: à droite 70% - Style Cyberpunk */}
+      <div className="w-full h-1/2 md:w-[70%] md:h-full order-1 md:order-2 bg-black relative overflow-hidden">
+        {/* Barre de titre cyberpunk */}
+        <div className="h-10 bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-cyan-400/50 flex items-center px-4 relative">
+          {/* Effet glow */}
+          <div className="absolute inset-0 bg-cyan-400/5"></div>
 
-        {/* Indicateur de progression */}
-        {!isOverviewMode && (
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-            {projects.map((_, index) => (
-              <div
-                key={index}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  index === currentPlanetIndex
-                    ? "bg-cyan-400 scale-125"
-                    : "bg-white/30"
-                }`}
-              />
-            ))}
+          <div className="flex gap-2 z-10">
+            <div className="w-2 h-2 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
+            <div className="w-2 h-2 bg-cyan-400/50"></div>
+            <div className="w-2 h-2 bg-cyan-400/50"></div>
           </div>
-        )}
+          <div className="flex-1 text-center z-10">
+            <span className="text-cyan-400 text-xs font-mono tracking-widest">
+              [ SOLAR SYSTEM 3D ]
+            </span>
+          </div>
+          <div className="text-cyan-400/50 text-xs font-mono z-10">▼</div>
+        </div>
+
+        {/* Canvas */}
+        <div className="h-[calc(100%-2.5rem)] relative bg-black">
+          <Canvas
+            camera={{ position: [120, 80, 120], fov: 75 }}
+            onCreated={({ camera }) => {
+              (camera as any).ref = camera;
+            }}
+            style={{ background: "#000000" }}
+          >
+            <Scene
+              scrollProgress={scrollProgress}
+              mousePosition={mousePosition}
+              onNavigateToPlanet={navigateToPlanet}
+            />
+          </Canvas>
+
+          {/* Indicateur de progression */}
+          {!isOverviewMode && (
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+              {projects.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    index === currentPlanetIndex
+                      ? "bg-cyan-400 scale-125"
+                      : "bg-white/30"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Fenêtre de contact - Coin bas gauche (cachée sur mobile) */}
+          <div className="hidden md:block absolute bottom-6 left-6 w-64 bg-black/95 border-2 border-cyan-400/50 rounded-sm overflow-hidden shadow-[0_0_20px_rgba(34,211,238,0.3)] z-20">
+            {/* Barre de titre */}
+            <div className="h-8 bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-cyan-400/50 flex items-center px-3 relative">
+              <div className="absolute inset-0 bg-cyan-400/5"></div>
+              <div className="flex gap-1.5 z-10">
+                <div className="w-1.5 h-1.5 bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"></div>
+                <div className="w-1.5 h-1.5 bg-cyan-400/50"></div>
+                <div className="w-1.5 h-1.5 bg-cyan-400/50"></div>
+              </div>
+              <div className="flex-1 text-center z-10">
+                <span className="text-cyan-400 text-[10px] font-mono tracking-widest">
+                  [ CONTACT ]
+                </span>
+              </div>
+            </div>
+
+            {/* Contenu */}
+            <div className="p-4 font-mono text-xs space-y-3">
+              <div className="text-gray-400">
+                <span className="text-cyan-400">&gt;</span> contact.info
+              </div>
+
+              <div className="space-y-2">
+                <a
+                  href="mailto:bastien.guitard@example.com"
+                  className="flex items-center gap-2 text-white hover:text-cyan-400 transition-colors group"
+                >
+                  <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)]">
+                    📧
+                  </span>
+                  <span className="text-[10px]">EMAIL</span>
+                </a>
+
+                <a
+                  href="https://github.com/bastienggg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-white hover:text-cyan-400 transition-colors group"
+                >
+                  <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)]">
+                    🔗
+                  </span>
+                  <span className="text-[10px]">GITHUB</span>
+                </a>
+
+                <a
+                  href="https://www.linkedin.com/in/bastien-guitard-30585329b/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-white hover:text-cyan-400 transition-colors group"
+                >
+                  <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)]">
+                    💼
+                  </span>
+                  <span className="text-[10px]">LINKEDIN</span>
+                </a>
+              </div>
+
+              <div className="text-cyan-400/50 text-[9px] mt-3 border-t border-cyan-400/20 pt-2">
+                &gt; status: online_
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <style jsx global>{`
