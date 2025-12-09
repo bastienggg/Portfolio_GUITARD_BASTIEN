@@ -469,6 +469,20 @@ export default function SolarSystemScene() {
   const [terminalText, setTerminalText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const prevProjectRef = useRef<string | null>(null);
+  
+  // États pour le terminal interactif
+  const [terminalHistory, setTerminalHistory] = useState<string[]>([]);
+  const [currentCommand, setCurrentCommand] = useState("");
+  const [isInteractiveMode, setIsInteractiveMode] = useState(false);
+  const terminalInputRef = useRef<HTMLInputElement>(null);
+  const terminalHistoryRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll vers le bas quand l'historique change
+  useEffect(() => {
+    if (terminalHistoryRef.current) {
+      terminalHistoryRef.current.scrollTop = terminalHistoryRef.current.scrollHeight;
+    }
+  }, [terminalHistory]);
 
   // Gestion du mouvement de la souris pour parallax
   useEffect(() => {
@@ -551,6 +565,78 @@ export default function SolarSystemScene() {
     targetScrollRef.current = planetIndex;
   };
 
+  // Fonction pour traiter les commandes du terminal
+  const executeCommand = (cmd: string) => {
+    const trimmedCmd = cmd.trim();
+    if (!trimmedCmd) return;
+
+    // Ajouter la commande à l'historique
+    setTerminalHistory(prev => [...prev, `> ${trimmedCmd}`]);
+
+    const [command, ...args] = trimmedCmd.split(' ');
+    const arg = args.join(' ');
+
+    switch (command.toLowerCase()) {
+      case 'ls':
+        const projectList = projects.map((p, i) => `  [${i}] ${p.title} - ${p.status}`).join('\n');
+        setTerminalHistory(prev => [...prev, `\nProjets disponibles:\n${projectList}\n`]);
+        break;
+
+      case 'cd':
+        if (!arg) {
+          setTerminalHistory(prev => [...prev, 'Erreur: Spécifiez un projet (ex: cd 0 ou cd "Dot TXT")\n']);
+        } else {
+          // Chercher par index ou par nom
+          let projectIndex = -1;
+          const numArg = parseInt(arg);
+          
+          if (!isNaN(numArg) && numArg >= 0 && numArg < projects.length) {
+            projectIndex = numArg;
+          } else {
+            projectIndex = projects.findIndex(p => 
+              p.title.toLowerCase().includes(arg.toLowerCase()) ||
+              p.id.toLowerCase() === arg.toLowerCase()
+            );
+          }
+
+          if (projectIndex >= 0) {
+            navigateToPlanet(projectIndex);
+            setTerminalHistory(prev => [...prev, `Navigation vers: ${projects[projectIndex].title}\n`]);
+            setIsInteractiveMode(false);
+          } else {
+            setTerminalHistory(prev => [...prev, `Projet non trouvé: "${arg}"\n`]);
+          }
+        }
+        break;
+
+      case 'help':
+        const helpText = `\nCommandes disponibles:\n  ls              - Liste tous les projets\n  cd [projet]     - Navigue vers un projet (par index ou nom)\n  help            - Affiche cette aide\n  clear           - Efface le terminal\n  whoami          - Informations sur le développeur\n  exit            - Quitte le mode interactif\n`;
+        setTerminalHistory(prev => [...prev, helpText]);
+        break;
+
+      case 'clear':
+        setTerminalHistory([]);
+        break;
+
+      case 'whoami':
+        const aboutText = `\n╔══════════════════════════════════════╗\n║     BASTIEN GUITARD                  ║\n║     Développeur Full-Stack           ║\n╚══════════════════════════════════════╝\n\nÉtudiant en 3ème année BUT MMI\nPassionné par le développement web et les dispositifs interactifs\n\nGitHub: github.com/bastienggg\nLinkedIn: linkedin.com/in/bastien-guitard-30585329b\n`;
+        setTerminalHistory(prev => [...prev, aboutText]);
+        break;
+
+      case 'exit':
+        setIsInteractiveMode(false);
+        setTerminalHistory([]);
+        // Forcer le rechargement du projet actuel
+        prevProjectRef.current = null;
+        break;
+
+      default:
+        setTerminalHistory(prev => [...prev, `Commande inconnue: "${command}". Tapez "help" pour voir les commandes disponibles.\n`]);
+    }
+
+    setCurrentCommand('');
+  };
+
   // Animation typewriter pour le terminal
   useEffect(() => {
     if (!isOverviewMode && currentProject) {
@@ -612,9 +698,71 @@ export default function SolarSystemScene() {
 
         {/* Contenu du terminal */}
         <div className="h-[calc(100%-2.5rem)] overflow-hidden relative">
-          {isOverviewMode ? (
+          {isInteractiveMode ? (
+            // Mode terminal interactif
+            <div className="p-6 md:p-10 h-full font-mono text-white relative flex flex-col">
+              {/* Historique du terminal */}
+              <div ref={terminalHistoryRef} className="flex-1 overflow-y-auto text-xs md:text-sm scrollbar-hide">
+                <div className="text-cyan-400 mb-4">
+                  ╔══════════════════════════════════════╗
+                  <br />║  TERMINAL INTERACTIF v1.0            ║
+                  <br />╚══════════════════════════════════════╝
+                  <br />
+                  <br />Tapez &quot;help&quot; pour voir les commandes disponibles.
+                  <br />
+                </div>
+                {terminalHistory.map((line, i) => (
+                  <div key={i} className="whitespace-pre-wrap">
+                    {line.startsWith('>') ? (
+                      <span className="text-cyan-400">{line}</span>
+                    ) : (
+                      <span className="text-gray-300">{line}</span>
+                    )}
+                  </div>
+                ))}
+                
+                {/* Input de commande inline */}
+                <div className="flex items-start gap-2 mt-2">
+                  <span className="text-cyan-400 text-xs md:text-sm flex-shrink-0">&gt;</span>
+                  <div className="flex-1 flex items-center">
+                    <input
+                      ref={terminalInputRef}
+                      type="text"
+                      value={currentCommand}
+                      onChange={(e) => setCurrentCommand(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          executeCommand(currentCommand);
+                        }
+                      }}
+                      className="flex-1 bg-transparent text-white outline-none font-mono text-xs md:text-sm"
+                      placeholder="Tapez une commande..."
+                      autoFocus
+                    />
+                    <span className="animate-pulse text-cyan-400 ml-1">█</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Effet scanline */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-10"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(0deg, transparent, transparent 2px, white 2px, white 4px)",
+                }}
+              ></div>
+            </div>
+          ) : isOverviewMode ? (
             // Présentation initiale - style terminal noir et blanc
-            <div className="p-6 md:p-10 h-full flex flex-col justify-center font-mono text-white relative">
+            <div 
+              className="p-6 md:p-10 h-full flex flex-col justify-center font-mono text-white relative cursor-pointer hover:bg-white/5 transition-colors"
+              onClick={() => {
+                setIsInteractiveMode(true);
+                setTimeout(() => terminalInputRef.current?.focus(), 100);
+              }}
+              title="Cliquer pour ouvrir le terminal interactif"
+            >
               <div className="mb-6 md:mb-8">
                 <span className="text-gray-500 text-sm">
                   &gt; SYSTEM_ONLINE
@@ -644,8 +792,13 @@ export default function SolarSystemScene() {
                 </p>
               </div>
 
-              <div className="text-gray-400 text-xs md:text-sm animate-pulse">
-                <span>&gt; Scroll ou Click sur les titres pour explorer_</span>
+              <div className="text-gray-400 text-xs md:text-sm space-y-2">
+                <div className="animate-pulse">
+                  <span>&gt; Scroll ou Click sur les titres pour explorer_</span>
+                </div>
+                <div className="text-cyan-400/50 text-xs mt-2">
+                  <span>[Cliquez sur le terminal pour le mode interactif]</span>
+                </div>
               </div>
 
               {/* Effet scanline */}
@@ -660,7 +813,17 @@ export default function SolarSystemScene() {
           ) : (
             // Terminal de projet avec animation typewriter - noir et blanc
             currentProject && (
-              <div className="p-6 md:p-10 h-full font-mono text-white overflow-y-auto relative">
+              <div 
+                className="p-6 md:p-10 h-full font-mono text-white overflow-y-auto relative cursor-pointer hover:bg-white/5 transition-colors"
+                onClick={(e) => {
+                  // Ne pas déclencher si on clique sur un lien
+                  if ((e.target as HTMLElement).tagName !== 'A') {
+                    setIsInteractiveMode(true);
+                    setTimeout(() => terminalInputRef.current?.focus(), 100);
+                  }
+                }}
+                title="Cliquer pour ouvrir le terminal interactif"
+              >
                 {/* Texte qui s'écrit avec titre en couleur */}
                 <pre className="whitespace-pre-wrap text-xs md:text-sm leading-relaxed">
                   {terminalText.split("\n").map((line, i) => {
@@ -685,31 +848,30 @@ export default function SolarSystemScene() {
                 </pre>
 
                 {/* Boutons affichés seulement quand l'animation est terminée */}
-                {!isTyping &&
-                  (currentProject.githubUrl || currentProject.demoUrl) && (
-                    <div className="mt-6 md:mt-8 flex flex-col md:flex-row gap-3 md:gap-4">
-                      {currentProject.githubUrl && (
-                        <a
-                          href={currentProject.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-3 md:px-4 py-2 text-sm md:text-base border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
-                        >
-                          &gt; GITHUB
-                        </a>
-                      )}
-                      {currentProject.demoUrl && (
-                        <a
-                          href={currentProject.demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-3 md:px-4 py-2 text-sm md:text-base bg-cyan-400 text-black hover:bg-cyan-300 transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
-                        >
-                          &gt; DEMO
-                        </a>
-                      )}
-                    </div>
-                  )}
+                {!isTyping && (currentProject.githubUrl || currentProject.demoUrl) && (
+                  <div className="mt-6 md:mt-8 flex flex-col md:flex-row gap-3 md:gap-4">
+                    {currentProject.githubUrl && (
+                      <a
+                        href={currentProject.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 md:px-4 py-2 text-sm md:text-base border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
+                      >
+                        &gt; GITHUB
+                      </a>
+                    )}
+                    {currentProject.demoUrl && (
+                      <a
+                        href={currentProject.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 md:px-4 py-2 text-sm md:text-base bg-cyan-400 text-black hover:bg-cyan-300 transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
+                      >
+                        &gt; DEMO
+                      </a>
+                    )}
+                  </div>
+                )}
 
                 {/* Effet scanline */}
                 <div
@@ -846,6 +1008,15 @@ export default function SolarSystemScene() {
 
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap");
+        
+        /* Cacher la scrollbar pour le terminal */
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
       `}</style>
     </div>
   );
