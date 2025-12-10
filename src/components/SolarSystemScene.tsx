@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Text } from "@react-three/drei";
+import { OrbitControls, Text, useGLTF, useAnimations } from "@react-three/drei";
 import { useRef, useState, useEffect, useMemo } from "react";
 import * as THREE from "three";
 import projects from "@/data/projects.json";
@@ -15,6 +15,7 @@ interface Project {
   githubUrl?: string;
   demoUrl?: string;
   imageUrl: string;
+  modelPath?: string; // Chemin vers le modèle GLB (optionnel)
   status: string;
   featured?: boolean;
 }
@@ -247,6 +248,73 @@ function PlanetLabel({
   );
 }
 
+// Composant Planète GLB (pour projets avec modèle 3D)
+function PlanetGLB({
+  position,
+  isActive,
+  modelPath,
+}: {
+  position: [number, number, number];
+  isActive: boolean;
+  modelPath: string;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const { scene, animations } = useGLTF(modelPath);
+  const { actions } = useAnimations(animations, groupRef);
+
+  // Jouer TOUTES les animations en même temps
+  useEffect(() => {
+    const animationNames = [
+      "IcosphèreAction",
+      "Icosphère.001Action",
+      "VolumeAction.001",
+      "VolumeAction.002",
+      "Icosphère.002Action",
+      "Icosphère.003Action",
+      "Icosphère.004Action",
+      "Icosphère.006Action",
+    ];
+
+    animationNames.forEach((name) => {
+      const action = actions[name];
+      if (action) {
+        action.reset().play();
+        action.setLoop(THREE.LoopRepeat, Infinity);
+        console.log(`Animation '${name}' jouée !`);
+      }
+    });
+  }, [actions]);
+
+  // Rotation automatique de la planète
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += 0.005; // Rotation sur l'axe Y
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={position}>
+      <primitive object={scene.clone()} scale={3} />
+
+      {/* Lumières locales diffuses pour la planète */}
+      <pointLight
+        position={[8, 8, 8]}
+        intensity={isActive ? 3 : 2}
+        color="#22d3ee"
+        distance={25}
+        decay={2}
+      />
+      <pointLight
+        position={[-8, 5, -8]}
+        intensity={2}
+        color="#ffffff"
+        distance={20}
+        decay={2}
+      />
+    </group>
+  );
+}
+
 // Composant Planète
 function Planet({
   position,
@@ -390,6 +458,7 @@ function Scene({
 }) {
   const controlsRef = useRef<any>(null);
   const [time, setTime] = useState(0);
+  const cameraLightRef = useRef<THREE.PointLight>(null);
 
   // Animation du temps pour les orbites
   useEffect(() => {
@@ -398,6 +467,13 @@ function Scene({
     }, 16);
     return () => clearInterval(interval);
   }, []);
+
+  // Mettre à jour la position de la lumière de la caméra
+  useFrame(({ camera }) => {
+    if (cameraLightRef.current) {
+      cameraLightRef.current.position.copy(camera.position);
+    }
+  });
 
   // Couleurs des planètes (style comic)
   const planetColors = [
@@ -459,9 +535,9 @@ function Scene({
           firstPlanetPos.z
         ).normalize();
         nextCameraPos = new THREE.Vector3(
-          firstPlanetPos.x + directionFromSun.x * 15,
-          firstPlanetPos.y + 8,
-          firstPlanetPos.z + directionFromSun.z * 15
+          firstPlanetPos.x + directionFromSun.x * 12,
+          firstPlanetPos.y + 6,
+          firstPlanetPos.z + directionFromSun.z * 12
         );
         nextTarget = firstPlanetPos;
 
@@ -484,9 +560,9 @@ function Scene({
         ).normalize();
         // Caméra à distance fixe, légèrement au-dessus pour meilleure vue
         currentCameraPos = new THREE.Vector3(
-          currentPlanetPos.x + currentDirection.x * 20,
+          currentPlanetPos.x + currentDirection.x * 12,
           currentPlanetPos.y + 3, // Légèrement au-dessus
-          currentPlanetPos.z + currentDirection.z * 20
+          currentPlanetPos.z + currentDirection.z * 12
         );
         // Cible = planète exactement
         currentTarget = currentPlanetPos;
@@ -499,9 +575,9 @@ function Scene({
           nextPlanetPos.z
         ).normalize();
         nextCameraPos = new THREE.Vector3(
-          nextPlanetPos.x + nextDirection.x * 20,
+          nextPlanetPos.x + nextDirection.x * 12,
           nextPlanetPos.y + 3, // Légèrement au-dessus
-          nextPlanetPos.z + nextDirection.z * 20
+          nextPlanetPos.z + nextDirection.z * 12
         );
         nextTarget = nextPlanetPos;
       }
@@ -542,33 +618,68 @@ function Scene({
 
   return (
     <>
-      {/* Lumières */}
-      <ambientLight intensity={0.8} />
-      <pointLight position={[0, 0, 0]} intensity={2} color="#FDB813" />
-      <pointLight position={[50, 50, 50]} intensity={1.5} />
-      <pointLight position={[-30, -20, -30]} intensity={0.8} color="#6366f1" />
-
+      {/* Lumière diffuse principale (éclairage global doux) */}
+      <hemisphereLight intensity={1.2} color="#ffffff" groundColor="#0a4d5c" />
+      {/* Lumière ambiante (base) */}
+      <ambientLight intensity={0.3} />
+      {/* Lumière du soleil central */}
+      <pointLight
+        position={[0, 0, 0]}
+        intensity={3}
+        color="#FDB813"
+        distance={200}
+        decay={1.5}
+      />
+      {/* Lumière directionnelle de gauche (lumière diffuse principale) */}
+      <directionalLight
+        position={[-100, 50, 50]}
+        intensity={2}
+        color="#ffffff"
+      />
+      {/* Lumière de la caméra (suit la caméra) - très lumineuse */}
+      <pointLight
+        ref={cameraLightRef}
+        intensity={8}
+        color="#ffffff"
+        distance={100}
+        decay={1}
+      />
+      {/* Lumière d'appoint droite */}
+      <directionalLight
+        position={[100, 30, -50]}
+        intensity={1}
+        color="#22d3ee"
+      />
       {/* Particules de galaxie */}
       <GalaxyParticles />
-
       {/* Soleil au centre */}
       <Sun />
-
       {/* Planètes avec labels */}
       {projects.map((project, index) => {
         const currentIndex = Math.max(0, Math.round(scrollProgress));
         const isActive = index === currentIndex;
         const showLabel = scrollProgress < 0 || !isActive; // Afficher label en overview ou si non active
 
+        // Utiliser le modèle 3D si modelPath est défini
+        const hasModel = project.modelPath !== undefined;
+
         return (
           <group key={project.id}>
-            <Planet
-              position={planetPositions[index]}
-              color={planetColors[index % planetColors.length]}
-              size={3}
-              project={project as Project}
-              isActive={isActive}
-            />
+            {hasModel ? (
+              <PlanetGLB
+                position={planetPositions[index]}
+                isActive={isActive}
+                modelPath={project.modelPath!}
+              />
+            ) : (
+              <Planet
+                position={planetPositions[index]}
+                color={planetColors[index % planetColors.length]}
+                size={3}
+                project={project as Project}
+                isActive={isActive}
+              />
+            )}
             <PlanetLabel
               position={planetPositions[index]}
               title={project.title}
@@ -578,8 +689,7 @@ function Scene({
             />
           </group>
         );
-      })}
-
+      })}{" "}
       {/* Contrôles de caméra - désactivés (parallax souris uniquement) */}
       <OrbitControls
         ref={controlsRef}
@@ -974,7 +1084,7 @@ export default function SolarSystemScene() {
             // Terminal de projet avec animation typewriter - noir et blanc
             currentProject && (
               <div
-                className="p-6 md:p-10 h-full font-mono text-white overflow-y-auto relative cursor-pointer hover:bg-white/5 transition-colors"
+                className="p-3 md:p-10 h-full font-mono text-white overflow-y-auto relative cursor-pointer hover:bg-white/5 transition-colors flex flex-col"
                 onClick={(e) => {
                   // Ne pas déclencher si on clique sur un lien
                   if ((e.target as HTMLElement).tagName !== "A") {
@@ -984,39 +1094,42 @@ export default function SolarSystemScene() {
                 }}
                 title="Cliquer pour ouvrir le terminal interactif"
               >
-                {/* Texte qui s'écrit avec titre en couleur */}
-                <pre className="whitespace-pre-wrap text-xs md:text-sm leading-relaxed">
-                  {terminalText.split("\n").map((line, i) => {
-                    // Colorer le titre du projet (ligne après les ━)
-                    const isTitle = line === currentProject.title.toUpperCase();
-                    return (
-                      <span key={i}>
-                        {isTitle ? (
-                          <span className="text-cyan-400 font-bold">
-                            {line}
-                          </span>
-                        ) : (
-                          line
-                        )}
-                        {i < terminalText.split("\n").length - 1 && "\n"}
-                      </span>
-                    );
-                  })}
-                  {isTyping && (
-                    <span className="animate-pulse text-cyan-400">█</span>
-                  )}
-                </pre>
+                {/* Texte qui s'écrit avec titre en couleur - scrollable si nécessaire */}
+                <div className="flex-1 overflow-y-auto scrollbar-hide">
+                  <pre className="whitespace-pre-wrap text-[10px] leading-tight md:text-sm md:leading-relaxed">
+                    {terminalText.split("\n").map((line, i) => {
+                      // Colorer le titre du projet (ligne après les ━)
+                      const isTitle =
+                        line === currentProject.title.toUpperCase();
+                      return (
+                        <span key={i}>
+                          {isTitle ? (
+                            <span className="text-cyan-400 font-bold">
+                              {line}
+                            </span>
+                          ) : (
+                            line
+                          )}
+                          {i < terminalText.split("\n").length - 1 && "\n"}
+                        </span>
+                      );
+                    })}
+                    {isTyping && (
+                      <span className="animate-pulse text-cyan-400">█</span>
+                    )}
+                  </pre>
+                </div>
 
-                {/* Boutons affichés seulement quand l'animation est terminée */}
+                {/* Boutons affichés seulement quand l'animation est terminée - toujours visibles en bas */}
                 {!isTyping &&
                   (currentProject.githubUrl || currentProject.demoUrl) && (
-                    <div className="mt-6 md:mt-8 flex flex-col md:flex-row gap-3 md:gap-4">
+                    <div className="mt-2 md:mt-8 flex flex-row gap-2 md:gap-4 flex-shrink-0">
                       {currentProject.githubUrl && (
                         <a
                           href={currentProject.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 md:px-4 py-2 text-sm md:text-base border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
+                          className="flex-1 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-base border border-cyan-400 md:border-2 text-cyan-400 hover:bg-cyan-400 hover:text-black transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
                         >
                           &gt; GITHUB
                         </a>
@@ -1026,7 +1139,7 @@ export default function SolarSystemScene() {
                           href={currentProject.demoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 md:px-4 py-2 text-sm md:text-base bg-cyan-400 text-black hover:bg-cyan-300 transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
+                          className="flex-1 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-base bg-cyan-400 text-black hover:bg-cyan-300 transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
                         >
                           &gt; DEMO
                         </a>
@@ -1100,69 +1213,101 @@ export default function SolarSystemScene() {
             </div>
           )}
 
-          {/* Fenêtre de contact - Coin bas gauche (cachée sur mobile) */}
-          <div className="hidden md:block absolute bottom-6 left-6 w-64 bg-black/95 border-2 border-cyan-400/50 rounded-sm overflow-hidden shadow-[0_0_20px_rgba(34,211,238,0.3)] z-20">
+          {/* Fenêtre de preview - Responsive (plus petite sur mobile) */}
+          <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 w-40 md:w-64 lg:w-80 bg-black/95 border-2 border-cyan-400/50 rounded-sm overflow-hidden shadow-[0_0_20px_rgba(34,211,238,0.3)] z-20">
             {/* Barre de titre */}
-            <div className="h-8 bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-cyan-400/50 flex items-center px-3 relative">
+            <div className="h-6 md:h-8 bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-cyan-400/50 flex items-center px-2 md:px-3 relative">
               <div className="absolute inset-0 bg-cyan-400/5"></div>
-              <div className="flex gap-1.5 z-10">
-                <div className="w-1.5 h-1.5 bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"></div>
-                <div className="w-1.5 h-1.5 bg-cyan-400/50"></div>
-                <div className="w-1.5 h-1.5 bg-cyan-400/50"></div>
+              <div className="flex gap-1 md:gap-1.5 z-10">
+                <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"></div>
+                <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-cyan-400/50"></div>
+                <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-cyan-400/50"></div>
               </div>
               <div className="flex-1 text-center z-10">
-                <span className="text-cyan-400 text-[10px] font-mono tracking-widest">
-                  [ CONTACT ]
+                <span className="text-cyan-400 text-[8px] md:text-[10px] font-mono tracking-widest">
+                  {isOverviewMode ? "[ CONTACT ]" : "[ PREVIEW ]"}
                 </span>
               </div>
             </div>
 
             {/* Contenu */}
-            <div className="p-4 font-mono text-xs space-y-3">
-              <div className="text-gray-400">
-                <span className="text-cyan-400">&gt;</span> contact.info
+            {isOverviewMode ? (
+              // Mode Overview - Contact
+              <div className="p-2 md:p-4 font-mono text-xs space-y-1.5 md:space-y-3">
+                <div className="text-gray-400 text-[8px] md:text-xs">
+                  <span className="text-cyan-400">&gt;</span> contact.info
+                </div>
+
+                <div className="space-y-1 md:space-y-2">
+                  <a
+                    href="mailto:bastienguitard8@gmail.com"
+                    className="flex items-center gap-1.5 md:gap-2 text-white hover:text-cyan-400 transition-colors group"
+                  >
+                    <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)] text-xs md:text-base">
+                      📧
+                    </span>
+                    <span className="text-[8px] md:text-[10px]">EMAIL</span>
+                  </a>
+
+                  <a
+                    href="https://github.com/bastienggg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 md:gap-2 text-white hover:text-cyan-400 transition-colors group"
+                  >
+                    <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)] text-xs md:text-base">
+                      🔗
+                    </span>
+                    <span className="text-[8px] md:text-[10px]">GITHUB</span>
+                  </a>
+
+                  <a
+                    href="https://www.linkedin.com/in/bastien-guitard-30585329b/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 md:gap-2 text-white hover:text-cyan-400 transition-colors group"
+                  >
+                    <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)] text-xs md:text-base">
+                      💼
+                    </span>
+                    <span className="text-[8px] md:text-[10px]">LINKEDIN</span>
+                  </a>
+                </div>
+
+                <div className="text-cyan-400/50 text-[7px] md:text-[9px] mt-1.5 md:mt-3 border-t border-cyan-400/20 pt-1.5 md:pt-2">
+                  &gt; status: online_
+                </div>
               </div>
-
-              <div className="space-y-2">
-                <a
-                  href="mailto:bastien.guitard@example.com"
-                  className="flex items-center gap-2 text-white hover:text-cyan-400 transition-colors group"
-                >
-                  <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)]">
-                    📧
-                  </span>
-                  <span className="text-[10px]">EMAIL</span>
-                </a>
-
-                <a
-                  href="https://github.com/bastienggg"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-white hover:text-cyan-400 transition-colors group"
-                >
-                  <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)]">
-                    🔗
-                  </span>
-                  <span className="text-[10px]">GITHUB</span>
-                </a>
-
-                <a
-                  href="https://www.linkedin.com/in/bastien-guitard-30585329b/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-white hover:text-cyan-400 transition-colors group"
-                >
-                  <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)]">
-                    💼
-                  </span>
-                  <span className="text-[10px]">LINKEDIN</span>
-                </a>
-              </div>
-
-              <div className="text-cyan-400/50 text-[9px] mt-3 border-t border-cyan-400/20 pt-2">
-                &gt; status: online_
-              </div>
-            </div>
+            ) : (
+              // Mode Projet - Preview Image (plus compact sur mobile)
+              currentProject && (
+                <div className="p-0">
+                  <a
+                    href={currentProject.demoUrl || currentProject.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block group cursor-pointer"
+                  >
+                    <div className="relative overflow-hidden aspect-video">
+                      <img
+                        src={currentProject.imageUrl}
+                        alt={currentProject.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1.5 md:p-3">
+                        <span className="text-cyan-400 text-[8px] md:text-xs font-mono">
+                          &gt; VOIR
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                  <div className="p-1.5 md:p-3 font-mono text-[7px] md:text-[9px] text-gray-400 truncate">
+                    <span className="text-cyan-400">&gt;</span>{" "}
+                    {currentProject.title}
+                  </div>
+                </div>
+              )
+            )}
           </div>
         </div>
       </div>

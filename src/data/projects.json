@@ -16,6 +16,7 @@
     "githubUrl": "https://github.com/bastienggg/Dot_TXT",
     "demoUrl": "https://dot-txt.fr",
     "imageUrl": "/projects/dottxt.png",
+    "modelPath": "/projects/Planete1.glb",
     "status": "in-progress",
     "featured": true
   },
