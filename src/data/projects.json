@@ -50,6 +50,7 @@
     "githubUrl": "https://github.com/bastienggg/Habit_Tracker",
     "demoUrl": "https://habit-tracker-beige-psi.vercel.app/",
     "imageUrl": "/projects/habittracker.png",
+    "modelPath": "/projects/HabitTracker4.glb",
     "status": "in-progress",
     "featured": false
   },
