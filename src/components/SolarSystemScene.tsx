@@ -151,29 +151,18 @@ function GalaxyParticles() {
 
 // Composant Soleil
 function Sun() {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
+  const { scene } = useGLTF("/projects/soleil.glb");
 
-  useEffect(() => {
-    const animate = () => {
-      if (meshRef.current) {
-        meshRef.current.rotation.y += 0.001;
-      }
-      requestAnimationFrame(animate);
-    };
-    animate();
-  }, []);
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += 0.001;
+    }
+  });
 
   return (
-    <group position={[0, 0, 0]}>
-      <mesh ref={meshRef}>
-        <sphereGeometry args={[4, 32, 32]} />
-        <meshStandardMaterial
-          color="#FDB813"
-          emissive="#FDB813"
-          emissiveIntensity={1.5}
-          roughness={0.3}
-        />
-      </mesh>
+    <group ref={groupRef} position={[0, 0, 0]}>
+      <primitive object={scene.clone()} scale={4} />
       {/* Glow effect */}
       <mesh>
         <sphereGeometry args={[5, 32, 32]} />

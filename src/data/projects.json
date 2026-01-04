@@ -16,7 +16,7 @@
     "githubUrl": "https://github.com/bastienggg/Dot_TXT",
     "demoUrl": "https://dot-txt.fr",
     "imageUrl": "/projects/dottxt.png",
-    "modelPath": "/projects/Planete1.glb",
+    "modelPath": "/projects/dottxt2.glb",
     "status": "in-progress",
     "featured": true
   },
@@ -38,6 +38,7 @@
     "githubUrl": "https://github.com/bastienggg",
     "demoUrl": "https://github.com/bastienggg",
     "imageUrl": "/projects/troisfoisrien.png",
+    "modelPath": "/projects/tfr.glb",
     "status": "in-progress",
     "featured": true
   },
@@ -71,6 +72,7 @@
     "githubUrl": "https://github.com/bastienggg/Let_him_quizz",
     "demoUrl": "https://lethimquiz.bastienguitard.fr",
     "imageUrl": "/projects/lethimquizz.png",
+    "modelPath": "/projects/lethimquizz.glb",
     "status": "completed",
     "featured": false
   },
@@ -83,6 +85,7 @@
     "githubUrl": "https://github.com/bastienggg/ZippyTheMouse",
     "demoUrl": "https://zippy.bastienguitard.fr",
     "imageUrl": "/projects/zippy.png",
+    "modelPath": "/projects/zippy2.glb",
     "status": "completed",
     "featured": false
   }
