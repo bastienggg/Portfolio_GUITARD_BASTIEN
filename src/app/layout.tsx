@@ -127,7 +127,10 @@ export default function RootLayout({
         />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#F7F7E1" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
         <meta name="msapplication-navbutton-color" content="#F7F7E1" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>

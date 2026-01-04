@@ -855,8 +855,8 @@ export default function SolarSystemScene() {
 
     smoothScroll();
     return () => cancelAnimationFrame(animationFrameId);
-  }, []); 
-  
+  }, []);
+
   // Gestion du scroll avec transition automatique vers planète suivante/précédente
   useEffect(() => {
     let isScrolling = false;
@@ -1146,21 +1146,24 @@ export default function SolarSystemScene() {
 
       {/* Portfolio principal */}
       <div className="w-full h-screen flex flex-col md:flex-row paper-texture">
-      {/* Bouton de contrôle audio - style sketch */}
-      <button
-        onClick={toggleMusic}
-        className="fixed top-4 right-4 z-50 w-10 h-10 md:w-12 md:h-12 bg-[#FFFEF5] border-2 border-[#0F0F0F] flex items-center justify-center hover:bg-[#0F0F0F] hover:text-[#F7F7E1] transition-all sketch-shadow group"
-        title={isMusicPlaying ? "Couper la musique" : "Activer la musique"}
-      >
-        {isMusicPlaying ? (
-          <span className="text-xl md:text-2xl font-bold">♫</span>
-        ) : (
-          <span className="text-xl md:text-2xl font-bold relative">
-            <span>♫</span>
-            <span className="absolute inset-0 flex items-center justify-center text-3xl">/</span>
-          </span>
-        )}
-      </button>        {/* SVG Filters pour bordures gribouillées */}
+        {/* Bouton de contrôle audio - style sketch */}
+        <button
+          onClick={toggleMusic}
+          className="fixed top-4 right-4 z-50 w-10 h-10 md:w-12 md:h-12 bg-[#FFFEF5] border-2 border-[#0F0F0F] flex items-center justify-center hover:bg-[#0F0F0F] hover:text-[#F7F7E1] transition-all sketch-shadow group"
+          title={isMusicPlaying ? "Couper la musique" : "Activer la musique"}
+        >
+          {isMusicPlaying ? (
+            <span className="text-xl md:text-2xl font-bold">♫</span>
+          ) : (
+            <span className="text-xl md:text-2xl font-bold relative">
+              <span>♫</span>
+              <span className="absolute inset-0 flex items-center justify-center text-3xl">
+                /
+              </span>
+            </span>
+          )}
+        </button>{" "}
+        {/* SVG Filters pour bordures gribouillées */}
         <svg className="svg-filters" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <filter
@@ -1187,7 +1190,6 @@ export default function SolarSystemScene() {
             </filter>
           </defs>
         </svg>
-
         {/* Fenêtre Terminal - Mobile: en bas | Desktop: à gauche 30% - Style Sketch */}
         <div className="w-full h-1/2 md:w-[30%] md:h-full order-2 md:order-1 bg-[#F7F7E1] relative overflow-hidden">
           {/* Bordure visible dessinée à la main (droite sur desktop, haut sur mobile) */}
@@ -1399,7 +1401,6 @@ export default function SolarSystemScene() {
             )}
           </div>
         </div>
-
         {/* Fenêtre Canvas 3D - Mobile: en haut | Desktop: à droite 70% - Style Sketch */}
         <div className="w-full h-1/2 md:w-[70%] md:h-full order-1 md:order-2 bg-[#F7F7E1] relative overflow-hidden paper-texture">
           {/* Barre de titre sketch */}
@@ -1557,7 +1558,6 @@ export default function SolarSystemScene() {
             </div>
           </div>
         </div>
-
         <style jsx global>{`
           /* Cacher la scrollbar pour le terminal */
           .scrollbar-hide {
