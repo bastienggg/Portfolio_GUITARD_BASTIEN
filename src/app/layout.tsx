@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Schoolbell, Shadows_Into_Light } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const schoolbell = Schoolbell({
+  variable: "--font-schoolbell",
   subsets: ["latin"],
+  weight: ["400"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const shadowsIntoLight = Shadows_Into_Light({
+  variable: "--font-shadows",
   subsets: ["latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -124,10 +126,13 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#22d3ee" />
+        <meta name="theme-color" content="#F7F7E1" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="msapplication-navbutton-color" content="#F7F7E1" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
+        className={`${schoolbell.variable} ${shadowsIntoLight.variable} min-h-screen bg-background font-sans antialiased`}
       >
         {children}
       </body>

@@ -4,8 +4,8 @@
   "description": "Portfolio interactif 3D de Bastien Guitard, développeur full-stack",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#22d3ee",
+  "background_color": "#F7F7E1",
+  "theme_color": "#F7F7E1",
   "orientation": "any",
   "icons": [
     {

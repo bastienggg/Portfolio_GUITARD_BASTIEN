@@ -24,96 +24,80 @@ interface Project {
 function GalaxyParticles() {
   const particlesRef = useRef<THREE.Points>(null);
 
-  // Créer les particules en spirale galactique
+  // Créer les particules en vraie spirale galactique (comme la Voie Lactée)
   const particlesGeometry = useMemo(() => {
     const geometry = new THREE.BufferGeometry();
-    const particlesCount = 25000; // Plus de particules
+    const particlesCount = 15000; // Nombre de particules
     const positions = new Float32Array(particlesCount * 3);
     const colors = new Float32Array(particlesCount * 3);
+
+    const branches = 3; // Nombre de bras spiraux
+    const spinFactor = 4; // Intensité de la spirale
+    const randomnessPower = 3; // Dispersion des particules
 
     for (let i = 0; i < particlesCount; i++) {
       const i3 = i * 3;
 
-      // Déterminer le type de particule (spirale, nuage, ou dispersion)
-      const particleType = Math.random();
+      // Distance depuis le centre (distribution non-linéaire pour concentration au centre)
+      const radius = Math.pow(Math.random(), 1.5) * 120;
 
-      let x, y, z;
+      // Angle de la spirale
+      const spinAngle = radius * spinFactor * 0.015;
+      const branchAngle = ((i % branches) / branches) * Math.PI * 2;
 
-      if (particleType < 0.5) {
-        // 50% - Bras de spirale avec clustering
-        const radius = Math.random() * 150;
-        const spinAngle = radius * 0.5;
-        const branchAngle = ((i % 3) / 3) * Math.PI * 2;
+      // Position de base sur la spirale
+      const angle = branchAngle + spinAngle;
 
-        // Clustering - concentrer les particules par endroits
-        const clusterIntensity = Math.sin(radius * 0.1) * 10;
+      // Randomness décroissant avec la distance (plus dispersé au bord)
+      const randomX =
+        Math.pow(Math.random(), randomnessPower) *
+        (Math.random() < 0.5 ? 1 : -1) *
+        (2 + radius * 0.05);
+      const randomY =
+        Math.pow(Math.random(), randomnessPower) *
+        (Math.random() < 0.5 ? 1 : -1) *
+        (1 + radius * 0.02); // Moins de dispersion verticale
+      const randomZ =
+        Math.pow(Math.random(), randomnessPower) *
+        (Math.random() < 0.5 ? 1 : -1) *
+        (2 + radius * 0.05);
 
-        const randomX =
-          Math.pow(Math.random(), 2) *
-          (Math.random() < 0.5 ? 1 : -1) *
-          (15 + clusterIntensity);
-        const randomY =
-          Math.pow(Math.random(), 2) *
-          (Math.random() < 0.5 ? 1 : -1) *
-          (20 + clusterIntensity);
-        const randomZ =
-          Math.pow(Math.random(), 2) *
-          (Math.random() < 0.5 ? 1 : -1) *
-          (15 + clusterIntensity);
-
-        x = Math.cos(branchAngle + spinAngle) * radius + randomX;
-        y = randomY;
-        z = Math.sin(branchAngle + spinAngle) * radius + randomZ;
-      } else if (particleType < 0.75) {
-        // 25% - Nuages/nébuleuses sphériques à différents endroits
-        const cloudIndex = Math.floor(Math.random() * 5); // 5 nuages
-        const cloudAngle = (cloudIndex / 5) * Math.PI * 2;
-        const cloudDistance = 40 + Math.random() * 60;
-
-        const cloudCenterX = Math.cos(cloudAngle) * cloudDistance;
-        const cloudCenterY = (Math.random() - 0.5) * 30;
-        const cloudCenterZ = Math.sin(cloudAngle) * cloudDistance;
-
-        // Distribution gaussienne pour effet nuage
-        const cloudRadius = 15 + Math.random() * 10;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        const r = Math.pow(Math.random(), 0.5) * cloudRadius;
-
-        x = cloudCenterX + r * Math.sin(phi) * Math.cos(theta);
-        y = cloudCenterY + r * Math.sin(phi) * Math.sin(theta);
-        z = cloudCenterZ + r * Math.cos(phi);
-      } else {
-        // 25% - Particules dispersées aléatoirement (effet poussière cosmique)
-        const radius = Math.random() * 180;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-
-        x = radius * Math.sin(phi) * Math.cos(theta);
-        y = radius * Math.sin(phi) * Math.sin(theta);
-        z = radius * Math.cos(phi);
-      }
+      // Position finale
+      const x = Math.cos(angle) * radius + randomX;
+      const y = randomY;
+      const z = Math.sin(angle) * radius + randomZ;
 
       positions[i3] = x;
       positions[i3 + 1] = y;
       positions[i3 + 2] = z;
 
-      // Couleurs cyberpunk - cyan, blanc, bleu foncé
+      // Couleurs en gradient fluide depuis le centre: invisible au centre -> jaune -> gris -> noir
       const mixedColor = new THREE.Color();
-      const cyanColor = new THREE.Color("#22d3ee"); // Cyan
-      const whiteColor = new THREE.Color("#ffffff"); // Blanc
-      const darkCyanColor = new THREE.Color("#0a4d5c"); // Cyan foncé
+      const yellowColor = new THREE.Color("#FFD700"); // Jaune or près du soleil
+      const lightGrayColor = new THREE.Color("#B8B8A8"); // Gris clair
+      const darkGrayColor = new THREE.Color("#6A6A6A"); // Gris foncé
+      const blackColor = new THREE.Color("#1A1A1A"); // Presque noir loin
 
-      const randomValue = Math.random();
-
-      if (randomValue < 0.35) {
-        mixedColor.copy(cyanColor);
-      } else if (randomValue < 0.55) {
-        mixedColor.copy(whiteColor);
-      } else if (randomValue < 0.8) {
-        mixedColor.copy(darkCyanColor);
+      // Gradient fluide selon la distance au centre
+      if (radius < 10) {
+        // Zone 0-10: Jaune très clair (très proche du soleil, presque invisible par opacité)
+        mixedColor.copy(yellowColor);
+        mixedColor.multiplyScalar(1.2); // Jaune très brillant
+      } else if (radius < 35) {
+        // Zone 10-35: Jaune doré éclatant
+        mixedColor.copy(yellowColor);
+      } else if (radius < 70) {
+        // Zone 35-70: Transition jaune -> gris clair
+        const t = (radius - 35) / 35; // 0 à 1
+        mixedColor.lerpColors(yellowColor, lightGrayColor, t);
+      } else if (radius < 100) {
+        // Zone 70-100: Gris clair -> gris foncé
+        const t = (radius - 70) / 30;
+        mixedColor.lerpColors(lightGrayColor, darkGrayColor, t);
       } else {
-        mixedColor.lerpColors(cyanColor, whiteColor, Math.random());
+        // Zone 100+: Gris foncé -> noir (opacité décroissante)
+        const t = Math.min((radius - 100) / 20, 1);
+        mixedColor.lerpColors(darkGrayColor, blackColor, t);
       }
 
       colors[i3] = mixedColor.r;
@@ -127,20 +111,95 @@ function GalaxyParticles() {
     return geometry;
   }, []);
 
-  // Animation de rotation lente de la galaxie
+  // Animation de rotation lente de la galaxie - même sens que les planètes
   useFrame(() => {
     if (particlesRef.current) {
-      particlesRef.current.rotation.y += 0.0002;
+      particlesRef.current.rotation.y -= 0.0002; // Rotation inverse
     }
   });
 
   return (
     <points ref={particlesRef} geometry={particlesGeometry}>
       <pointsMaterial
+        size={0.35}
+        vertexColors
+        transparent
+        opacity={0.55}
+        sizeAttenuation
+        depthWrite={false}
+        blending={THREE.NormalBlending}
+      />
+    </points>
+  );
+}
+
+// Composant Particules flottantes (en plus de la galaxie)
+function FloatingParticles() {
+  const particlesRef = useRef<THREE.Points>(null);
+
+  // Créer des particules flottantes aléatoires
+  const { geometry, velocities } = useMemo(() => {
+    const geometry = new THREE.BufferGeometry();
+    const particlesCount = 5000; // Augmenté de 2000 à 5000
+    const positions = new Float32Array(particlesCount * 3);
+    const colors = new Float32Array(particlesCount * 3);
+    const velocities = new Float32Array(particlesCount * 3);
+
+    for (let i = 0; i < particlesCount; i++) {
+      const i3 = i * 3;
+
+      // Position aléatoire dans tout l'espace
+      positions[i3] = (Math.random() - 0.5) * 300;
+      positions[i3 + 1] = (Math.random() - 0.5) * 200;
+      positions[i3 + 2] = (Math.random() - 0.5) * 300;
+
+      // Vélocité aléatoire pour mouvement lent
+      velocities[i3] = (Math.random() - 0.5) * 0.05;
+      velocities[i3 + 1] = (Math.random() - 0.5) * 0.03;
+      velocities[i3 + 2] = (Math.random() - 0.5) * 0.05;
+
+      // Couleurs grises variées
+      const brightness = Math.random() * 0.5 + 0.3; // 0.3 à 0.8
+      colors[i3] = brightness;
+      colors[i3 + 1] = brightness;
+      colors[i3 + 2] = brightness;
+    }
+
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+    return { geometry, velocities };
+  }, []);
+
+  // Animation de mouvement des particules
+  useFrame(() => {
+    if (particlesRef.current) {
+      const positions = particlesRef.current.geometry.attributes.position
+        .array as Float32Array;
+
+      for (let i = 0; i < positions.length; i += 3) {
+        // Déplacer chaque particule selon sa vélocité
+        positions[i] += velocities[i];
+        positions[i + 1] += velocities[i + 1];
+        positions[i + 2] += velocities[i + 2];
+
+        // Reboucler les particules qui sortent de la zone
+        if (Math.abs(positions[i]) > 150) positions[i] *= -1;
+        if (Math.abs(positions[i + 1]) > 100) positions[i + 1] *= -1;
+        if (Math.abs(positions[i + 2]) > 150) positions[i + 2] *= -1;
+      }
+
+      particlesRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+  });
+
+  return (
+    <points ref={particlesRef} geometry={geometry}>
+      <pointsMaterial
         size={0.2}
         vertexColors
         transparent
-        opacity={0.65}
+        opacity={0.4}
         sizeAttenuation
         depthWrite={false}
         blending={THREE.AdditiveBlending}
@@ -199,26 +258,26 @@ function PlanetLabel({
 
   return (
     <group position={[position[0], position[1] + 10, position[2]]}>
-      {/* Trait blanc vertical - plus haut */}
+      {/* Trait noir vertical - plus haut */}
       <mesh position={[0, -4, 0]}>
         <boxGeometry args={[0.08, 7, 0.08]} />
-        <meshBasicMaterial color="white" />
+        <meshBasicMaterial color="#0F0F0F" />
       </mesh>
       {/* Point de connexion */}
       <mesh position={[0, -7.5, 0]}>
         <sphereGeometry args={[0.2, 16, 16]} />
-        <meshBasicMaterial color="white" />
+        <meshBasicMaterial color="#0F0F0F" />
       </mesh>
       {/* Texte 3D au-dessus du trait - toujours vers caméra et cliquable */}
       <Text
         ref={textRef}
         position={[0, 0.5, 0]}
         fontSize={1.2}
-        color="white"
+        color="#0F0F0F"
         anchorX="center"
         anchorY="middle"
-        outlineWidth={0.08}
-        outlineColor="#000000"
+        outlineWidth={0.05}
+        outlineColor="#9A9A8A"
         fontWeight="bold"
         onClick={(e) => {
           e.stopPropagation();
@@ -277,7 +336,7 @@ function PlanetGLB({
   // Rotation automatique de la planète
   useFrame(() => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += 0.005; // Rotation sur l'axe Y
+      groupRef.current.rotation.y += 0.002; // Rotation sur l'axe Y (ralentie)
     }
   });
 
@@ -288,15 +347,15 @@ function PlanetGLB({
       {/* Lumières locales diffuses pour la planète */}
       <pointLight
         position={[8, 8, 8]}
-        intensity={isActive ? 3 : 2}
-        color="#22d3ee"
+        intensity={isActive ? 2 : 1.5}
+        color="#E8E8DC"
         distance={25}
         decay={2}
       />
       <pointLight
         position={[-8, 5, -8]}
-        intensity={2}
-        color="#ffffff"
+        intensity={1.5}
+        color="#F7F7E1"
         distance={20}
         decay={2}
       />
@@ -608,28 +667,28 @@ function Scene({
   return (
     <>
       {/* Lumière diffuse principale (éclairage global doux) */}
-      <hemisphereLight intensity={1.2} color="#ffffff" groundColor="#0a4d5c" />
+      <hemisphereLight intensity={1.5} color="#F7F7E1" groundColor="#9A9A8A" />
       {/* Lumière ambiante (base) */}
-      <ambientLight intensity={0.3} />
+      <ambientLight intensity={0.6} color="#E8E8DC" />
       {/* Lumière du soleil central */}
       <pointLight
         position={[0, 0, 0]}
-        intensity={3}
-        color="#FDB813"
+        intensity={2}
+        color="#4A4A4A"
         distance={200}
         decay={1.5}
       />
       {/* Lumière directionnelle de gauche (lumière diffuse principale) */}
       <directionalLight
         position={[-100, 50, 50]}
-        intensity={2}
-        color="#ffffff"
+        intensity={1.5}
+        color="#F7F7E1"
       />
       {/* Lumière de la caméra (suit la caméra) - très lumineuse */}
       <pointLight
         ref={cameraLightRef}
-        intensity={8}
-        color="#ffffff"
+        intensity={5}
+        color="#FFFEF5"
         distance={100}
         decay={1}
       />
@@ -637,10 +696,12 @@ function Scene({
       <directionalLight
         position={[100, 30, -50]}
         intensity={1}
-        color="#22d3ee"
+        color="#D4D4C8"
       />
-      {/* Particules de galaxie */}
+      {/* Particules de galaxie spirale */}
       <GalaxyParticles />
+      {/* Particules flottantes */}
+      <FloatingParticles />
       {/* Soleil au centre */}
       <Sun />
       {/* Planètes avec labels */}
@@ -700,6 +761,9 @@ export default function SolarSystemScene() {
   const [terminalText, setTerminalText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const prevProjectRef = useRef<string | null>(null);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [hasEntered, setHasEntered] = useState(false); // Nouvel état pour l'écran d'entrée
 
   // États pour le terminal interactif
   const [terminalHistory, setTerminalHistory] = useState<string[]>([]);
@@ -707,6 +771,51 @@ export default function SolarSystemScene() {
   const [isInteractiveMode, setIsInteractiveMode] = useState(false);
   const terminalInputRef = useRef<HTMLInputElement>(null);
   const terminalHistoryRef = useRef<HTMLDivElement>(null);
+
+  // Gestion de la musique de fond
+  useEffect(() => {
+    // Créer l'élément audio
+    audioRef.current = new Audio("/mysterious-futuristic-ambience-375832.mp3");
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.3; // Volume à 30%
+
+    // Cleanup
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  // Fonction pour entrer dans le portfolio (lance la musique)
+  const handleEnter = async () => {
+    if (audioRef.current) {
+      try {
+        await audioRef.current.play();
+        setIsMusicPlaying(true);
+        setHasEntered(true);
+      } catch (error) {
+        console.error("Erreur lecture audio:", error);
+        setHasEntered(true); // Entrer quand même si l'audio échoue
+      }
+    } else {
+      setHasEntered(true);
+    }
+  };
+
+  // Toggle musique
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (isMusicPlaying) {
+        audioRef.current.pause();
+        setIsMusicPlaying(false);
+      } else {
+        audioRef.current.play();
+        setIsMusicPlaying(true);
+      }
+    }
+  };
 
   // Auto-scroll vers le bas quand l'historique change
   useEffect(() => {
@@ -746,40 +855,106 @@ export default function SolarSystemScene() {
 
     smoothScroll();
     return () => cancelAnimationFrame(animationFrameId);
-  }, []); // Gestion du scroll avec transition automatique vers planète suivante/précédente
+  }, []); 
+  
+  // Gestion du scroll avec transition automatique vers planète suivante/précédente
   useEffect(() => {
     let isScrolling = false;
     let scrollTimeout: NodeJS.Timeout;
+    let touchStartY = 0;
+    let touchEndY = 0;
+    let accumulatedDelta = 0; // Accumuler les petits scrolls
+    const deltaThreshold = 100; // Seuil minimum pour changer de planète
+    let lastScrollTime = 0; // Timestamp du dernier scroll traité
+    const scrollCooldown = 1000; // Cooldown de 1s entre chaque changement de planète
 
+    // Gestion du scroll souris avec accumulation et cooldown
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
 
-      // Empêcher les scrolls multiples pendant la transition
+      const now = Date.now();
+
+      // Empêcher les scrolls multiples pendant la transition ET pendant le cooldown
+      if (isScrolling || now - lastScrollTime < scrollCooldown) {
+        return;
+      }
+
+      // Accumuler les deltas
+      accumulatedDelta += e.deltaY;
+
+      // Réinitialiser l'accumulateur après un délai sans scroll
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        accumulatedDelta = 0;
+      }, 150);
+
+      // Ne changer de planète que si le seuil est atteint
+      if (Math.abs(accumulatedDelta) >= deltaThreshold) {
+        const currentPlanet = Math.round(targetScrollRef.current);
+        const direction = accumulatedDelta > 0 ? 1 : -1;
+        const targetPlanet = Math.max(
+          -1,
+          Math.min(projects.length - 1, currentPlanet + direction)
+        );
+
+        if (targetPlanet !== currentPlanet) {
+          isScrolling = true;
+          lastScrollTime = now; // Enregistrer le timestamp
+          targetScrollRef.current = targetPlanet;
+          accumulatedDelta = 0; // Reset après changement
+
+          setTimeout(() => {
+            isScrolling = false;
+          }, 800);
+        }
+      }
+    };
+
+    // Gestion du swipe tactile pour mobile
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      touchEndY = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = () => {
       if (isScrolling) return;
 
-      const currentPlanet = Math.round(targetScrollRef.current);
-      const direction = e.deltaY > 0 ? 1 : -1; // Scroll down = suivant, scroll up = précédent
-      const targetPlanet = Math.max(
-        -1, // Permet de revenir à la vue d'ensemble
-        Math.min(projects.length - 1, currentPlanet + direction)
-      );
+      const swipeDistance = touchStartY - touchEndY;
+      const minSwipeDistance = 50; // Distance minimale pour déclencher le swipe
 
-      // Si on peut aller vers une nouvelle planète
-      if (targetPlanet !== currentPlanet) {
-        isScrolling = true;
-        targetScrollRef.current = targetPlanet;
+      if (Math.abs(swipeDistance) > minSwipeDistance) {
+        const currentPlanet = Math.round(targetScrollRef.current);
+        const direction = swipeDistance > 0 ? 1 : -1; // Swipe up = suivant, swipe down = précédent
+        const targetPlanet = Math.max(
+          -1,
+          Math.min(projects.length - 1, currentPlanet + direction)
+        );
 
-        // Débloquer après la transition (durée réduite)
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          isScrolling = false;
-        }, 800); // Transition plus rapide
+        if (targetPlanet !== currentPlanet) {
+          isScrolling = true;
+          targetScrollRef.current = targetPlanet;
+
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            isScrolling = false;
+          }, 800);
+        }
       }
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+
     return () => {
       window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
       clearTimeout(scrollTimeout);
     };
   }, []);
@@ -889,6 +1064,12 @@ export default function SolarSystemScene() {
 
   // Animation typewriter pour le terminal
   useEffect(() => {
+    // Réinitialiser prevProjectRef quand on entre en mode overview
+    if (isOverviewMode) {
+      prevProjectRef.current = null;
+      return;
+    }
+
     if (!isOverviewMode && currentProject) {
       // Si changement de projet, effacer puis réécrire
       if (prevProjectRef.current !== currentProject.id) {
@@ -897,7 +1078,7 @@ export default function SolarSystemScene() {
 
         // Construire le texte complet avec meilleure mise en forme
         const fullText = `> PROJECT_LOADED\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\n${currentProject.title.toUpperCase()}\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\n> description:\n  ${
-          currentProject.description
+          currentProject.longDescription
         }\n\n> technologies:\n  [${currentProject.technologies.join(
           "] ["
         )}]\n\n> status: ${currentProject.status}\n\n> ready_`;
@@ -923,396 +1104,471 @@ export default function SolarSystemScene() {
   }, [currentProject, isOverviewMode]);
 
   return (
-    <div className="w-full h-screen flex flex-col md:flex-row bg-black">
-      {/* Fenêtre Terminal - Mobile: en bas | Desktop: à gauche 30% - Style Cyberpunk */}
-      <div className="w-full h-1/2 md:w-[30%] md:h-full order-2 md:order-1 bg-black relative overflow-hidden border-t-2 md:border-t-0 md:border-r-2 border-cyan-400/30">
-        {/* Barre de titre cyberpunk */}
-        <div className="h-10 bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-cyan-400/50 flex items-center px-4 relative">
-          {/* Effet glow */}
-          <div className="absolute inset-0 bg-cyan-400/5"></div>
-
-          <div className="flex gap-2 z-10">
-            <div className="w-2 h-2 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
-            <div className="w-2 h-2 bg-cyan-400/50"></div>
-            <div className="w-2 h-2 bg-cyan-400/50"></div>
-          </div>
-          <div className="flex-1 text-center z-10">
-            <span className="text-cyan-400 text-xs font-mono tracking-widest">
-              {isOverviewMode
-                ? "[ SYSTEM ]"
-                : `[ ${currentProject?.title.toUpperCase() || "PROJECT"} ]`}
-            </span>
-          </div>
-          <div className="text-cyan-400/50 text-xs font-mono z-10">▼</div>
-        </div>
-
-        {/* Contenu du terminal */}
-        <div className="h-[calc(100%-2.5rem)] overflow-hidden relative">
-          {isInteractiveMode ? (
-            // Mode terminal interactif
-            <div className="p-6 md:p-10 h-full font-mono text-white relative flex flex-col">
-              {/* Historique du terminal */}
-              <div
-                ref={terminalHistoryRef}
-                className="flex-1 overflow-y-auto text-xs md:text-sm scrollbar-hide"
-              >
-                <div className="text-cyan-400 mb-4">
-                  ╔══════════════════════════════════════╗
-                  <br />║ TERMINAL INTERACTIF v1.0 ║
-                  <br />
-                  ╚══════════════════════════════════════╝
-                  <br />
-                  <br />
-                  Tapez &quot;help&quot; pour voir les commandes disponibles.
-                  <br />
-                </div>
-                {terminalHistory.map((line, i) => (
-                  <div key={i} className="whitespace-pre-wrap">
-                    {line.startsWith(">") ? (
-                      <span className="text-cyan-400">{line}</span>
-                    ) : (
-                      <span className="text-gray-300">{line}</span>
-                    )}
-                  </div>
-                ))}
-
-                {/* Input de commande inline */}
-                <div className="flex items-start gap-2 mt-2">
-                  <span className="text-cyan-400 text-xs md:text-sm flex-shrink-0">
-                    &gt;
-                  </span>
-                  <div className="flex-1 flex items-center">
-                    <input
-                      ref={terminalInputRef}
-                      type="text"
-                      value={currentCommand}
-                      onChange={(e) => setCurrentCommand(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          executeCommand(currentCommand);
-                        }
-                      }}
-                      className="flex-1 bg-transparent text-white outline-none font-mono text-xs md:text-sm"
-                      placeholder="Tapez une commande..."
-                      autoFocus
-                    />
-                    <span className="animate-pulse text-cyan-400 ml-1">█</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Effet scanline */}
-              <div
-                className="absolute inset-0 pointer-events-none opacity-10"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(0deg, transparent, transparent 2px, white 2px, white 4px)",
-                }}
-              ></div>
-            </div>
-          ) : isOverviewMode ? (
-            // Présentation initiale - style terminal noir et blanc
-            <div
-              className="p-6 md:p-10 h-full flex flex-col justify-center font-mono text-white relative cursor-pointer hover:bg-white/5 transition-colors"
-              onClick={() => {
-                setIsInteractiveMode(true);
-                setTimeout(() => terminalInputRef.current?.focus(), 100);
-              }}
-              title="Cliquer pour ouvrir le terminal interactif"
-            >
-              <div className="mb-6 md:mb-8">
-                <span className="text-gray-500 text-sm">
-                  &gt; SYSTEM_ONLINE
-                </span>
-              </div>
-
-              <h1 className="text-4xl md:text-6xl font-bold text-cyan-400 mb-2 tracking-wider uppercase">
-                BASTIEN GUITARD
+    <>
+      {/* Écran d'entrée */}
+      {!hasEntered && (
+        <div className="fixed inset-0 z-[100] bg-[#F7F7E1] flex items-center justify-center paper-texture">
+          <div className="text-center space-y-8 md:space-y-12 p-6">
+            {/* Logo/Titre */}
+            <div className="space-y-4">
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-[#0F0F0F] tracking-wider uppercase">
+                BASTIEN
+                <br />
+                GUITARD
               </h1>
-              <span className="text-gray-500 mb-6 md:mb-8">
-                ========================================
-              </span>
-
-              <div className="mb-4">
-                <span className="text-gray-500">&gt; role:</span>
-                <span className="text-white ml-2 text-sm md:text-base">
-                  DÉVELOPPEUR FULL-STACK & CRÉATIF
-                </span>
-              </div>
-
-              <div className="mb-6 md:mb-8">
-                <span className="text-gray-500">&gt; message:</span>
-                <p className="text-gray-300 mt-2 leading-relaxed text-sm md:text-base">
-                  Bienvenue dans mon univers ! Explorez mes projets à travers ce
-                  système solaire interactif. Chaque planète représente une
-                  création unique mêlant technologie et créativité.
-                </p>
-              </div>
-
-              <div className="text-gray-400 text-xs md:text-sm space-y-2">
-                <div className="animate-pulse">
-                  <span>
-                    &gt; Scroll ou Click sur les titres pour explorer_
-                  </span>
-                </div>
-                <div className="text-cyan-400/50 text-xs mt-2">
-                  <span>[Cliquez sur le terminal pour le mode interactif]</span>
-                </div>
-              </div>
-
-              {/* Effet scanline */}
-              <div
-                className="absolute inset-0 pointer-events-none opacity-10"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(0deg, transparent, transparent 2px, white 2px, white 4px)",
-                }}
-              ></div>
+              <div className="pencil-line w-full"></div>
+              <p className="text-[#4A4A4A] text-sm md:text-base font-mono tracking-wide">
+                DÉVELOPPEUR FULL-STACK & CRÉATIF
+              </p>
             </div>
-          ) : (
-            // Terminal de projet avec animation typewriter - noir et blanc
-            currentProject && (
+
+            {/* Bouton Entrer */}
+            <button
+              onClick={handleEnter}
+              className="group relative px-12 py-4 md:px-16 md:py-6 bg-transparent border-4 border-[#0F0F0F] text-[#0F0F0F] text-xl md:text-2xl font-bold uppercase hover:bg-[#0F0F0F] hover:text-[#F7F7E1] transition-all duration-300 sketch-shadow"
+            >
+              <span className="relative z-10">ENTRER</span>
+              {/* Effet de fond animé */}
+              <div className="absolute inset-0 bg-[#0F0F0F] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+            </button>
+
+            {/* Indication sonore */}
+            <div className="text-[#9A9A8A] text-xs md:text-sm font-mono flex items-center justify-center gap-2">
+              <span className="text-lg font-bold text-[#0F0F0F]">[</span>
+              <span className="text-[#4A4A4A]">
+                Expérience audio recommandée
+              </span>
+              <span className="text-lg font-bold text-[#0F0F0F]">]</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Portfolio principal */}
+      <div className="w-full h-screen flex flex-col md:flex-row paper-texture">
+      {/* Bouton de contrôle audio - style sketch */}
+      <button
+        onClick={toggleMusic}
+        className="fixed top-4 right-4 z-50 w-10 h-10 md:w-12 md:h-12 bg-[#FFFEF5] border-2 border-[#0F0F0F] flex items-center justify-center hover:bg-[#0F0F0F] hover:text-[#F7F7E1] transition-all sketch-shadow group"
+        title={isMusicPlaying ? "Couper la musique" : "Activer la musique"}
+      >
+        {isMusicPlaying ? (
+          <span className="text-xl md:text-2xl font-bold">♫</span>
+        ) : (
+          <span className="text-xl md:text-2xl font-bold relative">
+            <span>♫</span>
+            <span className="absolute inset-0 flex items-center justify-center text-3xl">/</span>
+          </span>
+        )}
+      </button>        {/* SVG Filters pour bordures gribouillées */}
+        <svg className="svg-filters" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter
+              id="rough-border"
+              x="-50%"
+              y="-50%"
+              width="200%"
+              height="200%"
+            >
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.05"
+                numOctaves="3"
+                result="noise"
+                seed="2"
+              />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="noise"
+                scale="2"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
+          </defs>
+        </svg>
+
+        {/* Fenêtre Terminal - Mobile: en bas | Desktop: à gauche 30% - Style Sketch */}
+        <div className="w-full h-1/2 md:w-[30%] md:h-full order-2 md:order-1 bg-[#F7F7E1] relative overflow-hidden">
+          {/* Bordure visible dessinée à la main (droite sur desktop, haut sur mobile) */}
+          <div
+            className="absolute top-0 md:top-0 md:right-0 w-full md:w-1 h-1 md:h-full bg-gradient-to-r md:bg-gradient-to-b from-[#0F0F0F] via-[#2A2A2A] to-[#0F0F0F] opacity-70 z-50"
+            style={{ filter: "url(#rough-border)" }}
+          ></div>
+          <div
+            className="absolute top-0.5 md:top-0 md:right-0.5 w-full md:w-1 h-1 md:h-full bg-gradient-to-r md:bg-gradient-to-b from-[#4A4A4A] via-[#0F0F0F] to-[#4A4A4A] opacity-50 z-50"
+            style={{ filter: "url(#rough-border)" }}
+          ></div>
+          {/* Barre de titre sketch */}
+          <div className="h-10 bg-gradient-to-r from-[#FFFEF5] via-[#F7F7E1] to-[#FFFEF5] border-b-2 border-[#0F0F0F]/40 flex items-center px-4 relative visible-sketch-border">
+            {/* Trait crayon */}
+            <div className="absolute inset-0 pencil-line opacity-10"></div>
+
+            <div className="flex gap-2 z-10">
+              <div className="w-2 h-2 bg-[#0F0F0F] rounded-sm sketch-shadow-sm"></div>
+              <div className="w-2 h-2 bg-[#4A4A4A] rounded-sm"></div>
+              <div className="w-2 h-2 bg-[#9A9A8A] rounded-sm"></div>
+            </div>
+            <div className="flex-1 text-center z-10">
+              <span className="text-[#0F0F0F] text-xs font-mono tracking-widest font-bold">
+                {isOverviewMode
+                  ? "[ SYSTEM ]"
+                  : `[ ${currentProject?.title.toUpperCase() || "PROJECT"} ]`}
+              </span>
+            </div>
+            <div className="text-[#4A4A4A] text-xs font-mono z-10">▼</div>
+          </div>
+
+          {/* Contenu du terminal */}
+          <div className="h-[calc(100%-2.5rem)] overflow-hidden relative">
+            {isInteractiveMode ? (
+              // Mode terminal interactif
+              <div className="p-6 md:p-10 h-full font-mono text-[#0F0F0F] relative flex flex-col">
+                {/* Historique du terminal */}
+                <div
+                  ref={terminalHistoryRef}
+                  className="flex-1 overflow-y-auto text-xs md:text-sm scrollbar-hide"
+                >
+                  <div className="text-[#0F0F0F] mb-4 font-bold">
+                    ╭──────────────────────────────────────╮
+                    <br />│ TERMINAL INTERACTIF v1.0 │
+                    <br />
+                    ╰──────────────────────────────────────╯
+                    <br />
+                    <br />
+                    Tapez &quot;help&quot; pour voir les commandes disponibles.
+                    <br />
+                  </div>
+                  {terminalHistory.map((line, i) => (
+                    <div key={i} className="whitespace-pre-wrap">
+                      {line.startsWith(">") ? (
+                        <span className="text-[#0F0F0F] font-bold">{line}</span>
+                      ) : (
+                        <span className="text-[#4A4A4A]">{line}</span>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Input de commande inline */}
+                  <div className="flex items-start gap-2 mt-2">
+                    <span className="text-[#0F0F0F] text-xs md:text-sm flex-shrink-0 font-bold">
+                      &gt;
+                    </span>
+                    <div className="flex-1 flex items-center">
+                      <input
+                        ref={terminalInputRef}
+                        type="text"
+                        value={currentCommand}
+                        onChange={(e) => setCurrentCommand(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            executeCommand(currentCommand);
+                          }
+                        }}
+                        className="flex-1 bg-transparent text-[#0F0F0F] outline-none font-mono text-xs md:text-sm border-b border-[#9A9A8A]/30 focus:border-[#0F0F0F]/60 transition-colors"
+                        placeholder="Tapez une commande..."
+                        autoFocus
+                      />
+                      <span className="animate-pulse text-[#0F0F0F] ml-1">
+                        █
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : isOverviewMode ? (
+              // Présentation initiale - style sketch dessiné
               <div
-                className="p-3 md:p-10 h-full font-mono text-white overflow-y-auto relative cursor-pointer hover:bg-white/5 transition-colors flex flex-col"
-                onClick={(e) => {
-                  // Ne pas déclencher si on clique sur un lien
-                  if ((e.target as HTMLElement).tagName !== "A") {
-                    setIsInteractiveMode(true);
-                    setTimeout(() => terminalInputRef.current?.focus(), 100);
-                  }
+                className="p-6 md:p-10 h-full flex flex-col justify-center font-mono text-[#0F0F0F] relative cursor-pointer transition-colors"
+                onClick={() => {
+                  setIsInteractiveMode(true);
+                  setTimeout(() => terminalInputRef.current?.focus(), 100);
                 }}
                 title="Cliquer pour ouvrir le terminal interactif"
               >
-                {/* Texte qui s'écrit avec titre en couleur - scrollable si nécessaire */}
-                <div className="flex-1 overflow-y-auto scrollbar-hide">
-                  <pre className="whitespace-pre-wrap text-[10px] leading-tight md:text-sm md:leading-relaxed">
-                    {terminalText.split("\n").map((line, i) => {
-                      // Colorer le titre du projet (ligne après les ━)
-                      const isTitle =
-                        line === currentProject.title.toUpperCase();
-                      return (
-                        <span key={i}>
-                          {isTitle ? (
-                            <span className="text-cyan-400 font-bold">
-                              {line}
-                            </span>
-                          ) : (
-                            line
-                          )}
-                          {i < terminalText.split("\n").length - 1 && "\n"}
-                        </span>
-                      );
-                    })}
-                    {isTyping && (
-                      <span className="animate-pulse text-cyan-400">█</span>
-                    )}
-                  </pre>
+                <div className="mb-6 md:mb-8">
+                  <span className="text-[#4A4A4A] text-sm font-bold">
+                    &gt; SYSTEM_ONLINE
+                  </span>
                 </div>
 
-                {/* Boutons affichés seulement quand l'animation est terminée - toujours visibles en bas */}
-                {!isTyping &&
-                  (currentProject.githubUrl || currentProject.demoUrl) && (
-                    <div className="mt-2 md:mt-8 flex flex-row gap-2 md:gap-4 flex-shrink-0">
-                      {currentProject.githubUrl && (
-                        <a
-                          href={currentProject.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-base border border-cyan-400 md:border-2 text-cyan-400 hover:bg-cyan-400 hover:text-black transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
-                        >
-                          &gt; GITHUB
-                        </a>
-                      )}
-                      {currentProject.demoUrl && (
-                        <a
-                          href={currentProject.demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-base bg-cyan-400 text-black hover:bg-cyan-300 transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)] hover:shadow-[0_0_20px_rgba(34,211,238,0.8)] text-center"
-                        >
-                          &gt; DEMO
-                        </a>
-                      )}
-                    </div>
-                  )}
+                <h1 className="text-4xl md:text-6xl font-bold text-[#0F0F0F] mb-2 tracking-wider uppercase">
+                  BASTIEN GUITARD
+                </h1>
+                <div className="pencil-line mb-6 md:mb-8 w-full"></div>
 
-                {/* Effet scanline */}
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-10"
-                  style={{
-                    backgroundImage:
-                      "repeating-linear-gradient(0deg, transparent, transparent 2px, white 2px, white 4px)",
-                  }}
-                ></div>
-              </div>
-            )
-          )}
-        </div>
-      </div>
-
-      {/* Fenêtre Canvas 3D - Mobile: en haut | Desktop: à droite 70% - Style Cyberpunk */}
-      <div className="w-full h-1/2 md:w-[70%] md:h-full order-1 md:order-2 bg-black relative overflow-hidden">
-        {/* Barre de titre cyberpunk */}
-        <div className="h-10 bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-cyan-400/50 flex items-center px-4 relative">
-          {/* Effet glow */}
-          <div className="absolute inset-0 bg-cyan-400/5"></div>
-
-          <div className="flex gap-2 z-10">
-            <div className="w-2 h-2 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
-            <div className="w-2 h-2 bg-cyan-400/50"></div>
-            <div className="w-2 h-2 bg-cyan-400/50"></div>
-          </div>
-          <div className="flex-1 text-center z-10">
-            <span className="text-cyan-400 text-xs font-mono tracking-widest">
-              [ SOLAR SYSTEM 3D ]
-            </span>
-          </div>
-          <div className="text-cyan-400/50 text-xs font-mono z-10">▼</div>
-        </div>
-
-        {/* Canvas */}
-        <div className="h-[calc(100%-2.5rem)] relative bg-black">
-          <Canvas
-            camera={{ position: [120, 80, 120], fov: 75 }}
-            onCreated={({ camera }) => {
-              (camera as any).ref = camera;
-            }}
-            style={{ background: "#000000" }}
-          >
-            <Scene
-              scrollProgress={scrollProgress}
-              mousePosition={mousePosition}
-              onNavigateToPlanet={navigateToPlanet}
-            />
-          </Canvas>
-
-          {/* Indicateur de progression */}
-          {!isOverviewMode && (
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-              {projects.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-3 h-3 rounded-full transition-all ${
-                    index === currentPlanetIndex
-                      ? "bg-cyan-400 scale-125"
-                      : "bg-white/30"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Fenêtre de preview - Responsive (plus petite sur mobile) */}
-          <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 w-40 md:w-64 lg:w-80 bg-black/95 border-2 border-cyan-400/50 rounded-sm overflow-hidden shadow-[0_0_20px_rgba(34,211,238,0.3)] z-20">
-            {/* Barre de titre */}
-            <div className="h-6 md:h-8 bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-cyan-400/50 flex items-center px-2 md:px-3 relative">
-              <div className="absolute inset-0 bg-cyan-400/5"></div>
-              <div className="flex gap-1 md:gap-1.5 z-10">
-                <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"></div>
-                <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-cyan-400/50"></div>
-                <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-cyan-400/50"></div>
-              </div>
-              <div className="flex-1 text-center z-10">
-                <span className="text-cyan-400 text-[8px] md:text-[10px] font-mono tracking-widest">
-                  {isOverviewMode ? "[ CONTACT ]" : "[ PREVIEW ]"}
-                </span>
-              </div>
-            </div>
-
-            {/* Contenu */}
-            {isOverviewMode ? (
-              // Mode Overview - Contact
-              <div className="p-2 md:p-4 font-mono text-xs space-y-1.5 md:space-y-3">
-                <div className="text-gray-400 text-[8px] md:text-xs">
-                  <span className="text-cyan-400">&gt;</span> contact.info
+                <div className="mb-4">
+                  <span className="text-[#4A4A4A] font-bold">&gt; role:</span>
+                  <span className="text-[#0F0F0F] ml-2 text-sm md:text-base">
+                    DÉVELOPPEUR FULL-STACK & CRÉATIF
+                  </span>
                 </div>
 
-                <div className="space-y-1 md:space-y-2">
-                  <a
-                    href="mailto:bastienguitard8@gmail.com"
-                    className="flex items-center gap-1.5 md:gap-2 text-white hover:text-cyan-400 transition-colors group"
-                  >
-                    <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)] text-xs md:text-base">
-                      📧
-                    </span>
-                    <span className="text-[8px] md:text-[10px]">EMAIL</span>
-                  </a>
-
-                  <a
-                    href="https://github.com/bastienggg"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 md:gap-2 text-white hover:text-cyan-400 transition-colors group"
-                  >
-                    <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)] text-xs md:text-base">
-                      🔗
-                    </span>
-                    <span className="text-[8px] md:text-[10px]">GITHUB</span>
-                  </a>
-
-                  <a
-                    href="https://www.linkedin.com/in/bastien-guitard-30585329b/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 md:gap-2 text-white hover:text-cyan-400 transition-colors group"
-                  >
-                    <span className="text-cyan-400 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.5)] text-xs md:text-base">
-                      💼
-                    </span>
-                    <span className="text-[8px] md:text-[10px]">LINKEDIN</span>
-                  </a>
+                <div className="mb-6 md:mb-8">
+                  <span className="text-[#4A4A4A] font-bold">
+                    &gt; message:
+                  </span>
+                  <p className="text-[#2A2A2A] mt-2 leading-relaxed text-sm md:text-base">
+                    Bienvenue dans mon univers ! Explorez mes projets à travers
+                    ce système solaire interactif. Chaque planète représente une
+                    création unique mêlant technologie et créativité.
+                  </p>
                 </div>
 
-                <div className="text-cyan-400/50 text-[7px] md:text-[9px] mt-1.5 md:mt-3 border-t border-cyan-400/20 pt-1.5 md:pt-2">
-                  &gt; status: online_
+                <div className="text-[#4A4A4A] text-xs md:text-sm space-y-2">
+                  <div className="animate-pulse">
+                    <span className="font-bold">
+                      &gt; Scroll ou Click sur les titres pour explorer_
+                    </span>
+                  </div>
+                  <div className="text-[#9A9A8A] text-xs mt-2">
+                    <span>
+                      [Cliquez sur le terminal pour le mode interactif]
+                    </span>
+                  </div>
                 </div>
               </div>
             ) : (
-              // Mode Projet - Preview Image (plus compact sur mobile)
+              // Terminal de projet avec animation typewriter - style sketch
               currentProject && (
-                <div className="p-0">
-                  <a
-                    href={currentProject.demoUrl || currentProject.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block group cursor-pointer"
-                  >
-                    <div className="relative overflow-hidden aspect-video">
-                      <img
-                        src={currentProject.imageUrl}
-                        alt={currentProject.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1.5 md:p-3">
-                        <span className="text-cyan-400 text-[8px] md:text-xs font-mono">
-                          &gt; VOIR
-                        </span>
-                      </div>
-                    </div>
-                  </a>
-                  <div className="p-1.5 md:p-3 font-mono text-[7px] md:text-[9px] text-gray-400 truncate">
-                    <span className="text-cyan-400">&gt;</span>{" "}
-                    {currentProject.title}
+                <div
+                  className="p-3 md:p-10 h-full font-mono text-[#0F0F0F] overflow-y-auto relative cursor-pointer transition-colors flex flex-col"
+                  onClick={(e) => {
+                    // Ne pas déclencher si on clique sur un lien
+                    if ((e.target as HTMLElement).tagName !== "A") {
+                      setIsInteractiveMode(true);
+                      setTimeout(() => terminalInputRef.current?.focus(), 100);
+                    }
+                  }}
+                  title="Cliquer pour ouvrir le terminal interactif"
+                >
+                  {/* Texte qui s'écrit avec titre en couleur - scrollable si nécessaire */}
+                  <div className="flex-1 overflow-y-auto scrollbar-hide">
+                    <pre className="whitespace-pre-wrap text-[10px] leading-tight md:text-sm md:leading-relaxed">
+                      {terminalText.split("\n").map((line, i) => {
+                        // Mettre le titre du projet en gras et plus gros
+                        const isTitle =
+                          line === currentProject.title.toUpperCase();
+                        return (
+                          <span key={i}>
+                            {isTitle ? (
+                              <span className="text-[#0F0F0F] font-bold text-lg">
+                                {line}
+                              </span>
+                            ) : (
+                              line
+                            )}
+                            {i < terminalText.split("\n").length - 1 && "\n"}
+                          </span>
+                        );
+                      })}
+                      {isTyping && (
+                        <span className="animate-pulse text-[#0F0F0F]">█</span>
+                      )}
+                    </pre>
                   </div>
+
+                  {/* Boutons affichés seulement quand l'animation est terminée - toujours visibles en bas */}
+                  {!isTyping &&
+                    (currentProject.githubUrl || currentProject.demoUrl) && (
+                      <div className="mt-2 md:mt-8 flex flex-row gap-2 md:gap-4 flex-shrink-0">
+                        {currentProject.githubUrl && (
+                          <a
+                            href={currentProject.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-base border-2 border-[#0F0F0F] text-[#0F0F0F] hover:bg-[#0F0F0F] hover:text-[#F7F7E1] transition-all sketch-shadow text-center font-bold"
+                          >
+                            &gt; GITHUB
+                          </a>
+                        )}
+                        {currentProject.demoUrl && (
+                          <a
+                            href={currentProject.demoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-base bg-[#0F0F0F] text-[#F7F7E1] hover:bg-[#2A2A2A] transition-all sketch-shadow text-center font-bold"
+                          >
+                            &gt; DEMO
+                          </a>
+                        )}
+                      </div>
+                    )}
                 </div>
               )
             )}
           </div>
         </div>
+
+        {/* Fenêtre Canvas 3D - Mobile: en haut | Desktop: à droite 70% - Style Sketch */}
+        <div className="w-full h-1/2 md:w-[70%] md:h-full order-1 md:order-2 bg-[#F7F7E1] relative overflow-hidden paper-texture">
+          {/* Barre de titre sketch */}
+          <div className="h-10 bg-gradient-to-r from-[#FFFEF5] via-[#F7F7E1] to-[#FFFEF5] border-b-2 border-[#0F0F0F]/40 flex items-center px-4 relative visible-sketch-border">
+            {/* Trait crayon */}
+            <div className="absolute inset-0 pencil-line opacity-10"></div>
+
+            <div className="flex gap-2 z-10">
+              <div className="w-2 h-2 bg-[#0F0F0F] rounded-sm sketch-shadow-sm"></div>
+              <div className="w-2 h-2 bg-[#4A4A4A] rounded-sm"></div>
+              <div className="w-2 h-2 bg-[#9A9A8A] rounded-sm"></div>
+            </div>
+            <div className="flex-1 text-center z-10">
+              <span className="text-[#0F0F0F] text-xs font-mono tracking-widest font-bold">
+                [ SOLAR SYSTEM 3D ]
+              </span>
+            </div>
+            <div className="text-[#4A4A4A] text-xs font-mono z-10">▼</div>
+          </div>
+
+          {/* Canvas */}
+          <div className="h-[calc(100%-2.5rem)] relative bg-[#F7F7E1]">
+            <Canvas
+              camera={{ position: [120, 80, 120], fov: 75 }}
+              onCreated={({ camera }) => {
+                (camera as any).ref = camera;
+              }}
+              style={{ background: "#F7F7E1" }}
+            >
+              <Scene
+                scrollProgress={scrollProgress}
+                mousePosition={mousePosition}
+                onNavigateToPlanet={navigateToPlanet}
+              />
+            </Canvas>
+
+            {/* Indicateur de progression */}
+            {!isOverviewMode && (
+              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                {projects.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-3 h-3 rounded-sm transition-all sketch-shadow-sm ${
+                      index === currentPlanetIndex
+                        ? "bg-[#0F0F0F] scale-125"
+                        : "bg-[#9A9A8A]/50"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Fenêtre de preview - Responsive (plus petite sur mobile) */}
+            <div className="absolute bottom-36 left-4 md:bottom-65 md:left-6 w-40 md:w-64 lg:w-80 bg-[#FFFEF5]/95 rounded-sm overflow-hidden sketch-shadow z-20 visible-sketch-border">
+              {/* Barre de titre */}
+              <div className="h-6 md:h-8 bg-gradient-to-r from-[#FFFEF5] via-[#F7F7E1] to-[#FFFEF5] border-b-2 border-[#0F0F0F]/40 flex items-center px-2 md:px-3 relative">
+                <div className="absolute inset-0 pencil-line opacity-10"></div>
+                <div className="flex gap-1 md:gap-1.5 z-10">
+                  <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-[#0F0F0F] rounded-sm"></div>
+                  <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-[#4A4A4A] rounded-sm"></div>
+                  <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-[#9A9A8A] rounded-sm"></div>
+                </div>
+                <div className="flex-1 text-center z-10">
+                  <span className="text-[#0F0F0F] text-[8px] md:text-[10px] font-mono tracking-widest font-bold">
+                    {isOverviewMode ? "[ CONTACT ]" : "[ PREVIEW ]"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Contenu */}
+              {isOverviewMode ? (
+                // Mode Overview - Contact
+                <div className="p-2 md:p-4 font-mono text-xs space-y-1.5 md:space-y-3">
+                  <div className="text-[#4A4A4A] text-[8px] md:text-xs">
+                    <span className="text-[#0F0F0F] font-bold">&gt;</span>{" "}
+                    contact.info
+                  </div>
+
+                  <div className="space-y-1 md:space-y-2">
+                    <a
+                      href="mailto:bastienguitard8@gmail.com"
+                      className="flex items-center gap-1.5 md:gap-2 text-[#0F0F0F] hover:text-[#4A4A4A] transition-colors group"
+                    >
+                      <span className="text-[#0F0F0F] text-xs md:text-base font-bold">
+                        @
+                      </span>
+                      <span className="text-[8px] md:text-[10px] font-bold">
+                        EMAIL
+                      </span>
+                    </a>
+
+                    <a
+                      href="https://github.com/bastienggg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 md:gap-2 text-[#0F0F0F] hover:text-[#4A4A4A] transition-colors group"
+                    >
+                      <span className="text-[#0F0F0F] text-xs md:text-base font-bold">
+                        #
+                      </span>
+                      <span className="text-[8px] md:text-[10px] font-bold">
+                        GITHUB
+                      </span>
+                    </a>
+
+                    <a
+                      href="https://www.linkedin.com/in/bastien-guitard-30585329b/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 md:gap-2 text-[#0F0F0F] hover:text-[#4A4A4A] transition-colors group"
+                    >
+                      <span className="text-[#0F0F0F] text-xs md:text-base font-bold">
+                        in
+                      </span>
+                      <span className="text-[8px] md:text-[10px] font-bold">
+                        LINKEDIN
+                      </span>
+                    </a>
+                  </div>
+
+                  <div className="text-[#9A9A8A] text-[7px] md:text-[9px] mt-1.5 md:mt-3 border-t border-[#0F0F0F]/20 pt-1.5 md:pt-2">
+                    &gt; status: online_
+                  </div>
+                </div>
+              ) : (
+                // Mode Projet - Preview Image (plus compact sur mobile)
+                currentProject && (
+                  <div className="p-0">
+                    <a
+                      href={currentProject.demoUrl || currentProject.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block group cursor-pointer"
+                    >
+                      <div className="relative overflow-hidden aspect-video border border-[#0F0F0F]/20">
+                        <img
+                          src={currentProject.imageUrl}
+                          alt={currentProject.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#F7F7E1]/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1.5 md:p-3">
+                          <span className="text-[#0F0F0F] text-[8px] md:text-xs font-mono font-bold">
+                            &gt; VOIR
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                    <div className="p-1.5 md:p-3 font-mono text-[7px] md:text-[9px] text-[#4A4A4A] truncate">
+                      <span className="text-[#0F0F0F] font-bold">&gt;</span>{" "}
+                      {currentProject.title}
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+
+        <style jsx global>{`
+          /* Cacher la scrollbar pour le terminal */
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
       </div>
-
-      <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap");
-
-        /* Cacher la scrollbar pour le terminal */
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-    </div>
+    </>
   );
 }

@@ -1,3 +1,6 @@
+/* Import Google Fonts directement */
+@import url("https://fonts.googleapis.com/css2?family=Schoolbell&family=Shadows+Into+Light&display=swap");
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -43,41 +46,41 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 :root {
-  --background: oklch(0.9821 0 0);
-  --foreground: oklch(0.3485 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.3485 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.3485 0 0);
-  --primary: oklch(0.4891 0 0);
-  --primary-foreground: oklch(0.9551 0 0);
-  --secondary: oklch(0.9006 0 0);
-  --secondary-foreground: oklch(0.3485 0 0);
-  --muted: oklch(0.9158 0 0);
-  --muted-foreground: oklch(0.4313 0 0);
-  --accent: oklch(0.9354 0.0456 94.8549);
-  --accent-foreground: oklch(0.4015 0.0436 37.9587);
-  --destructive: oklch(0.6627 0.0978 20.0041);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.5538 0.0025 17.232);
-  --input: oklch(1 0 0);
-  --ring: oklch(0.7058 0 0);
-  --chart-1: oklch(0.3211 0 0);
-  --chart-2: oklch(0.4495 0 0);
-  --chart-3: oklch(0.5693 0 0);
-  --chart-4: oklch(0.683 0 0);
-  --chart-5: oklch(0.7921 0 0);
-  --sidebar: oklch(0.9551 0 0);
-  --sidebar-foreground: oklch(0.3485 0 0);
-  --sidebar-primary: oklch(0.4891 0 0);
-  --sidebar-primary-foreground: oklch(0.9551 0 0);
-  --sidebar-accent: oklch(0.9354 0.0456 94.8549);
-  --sidebar-accent-foreground: oklch(0.4015 0.0436 37.9587);
-  --sidebar-border: oklch(0.8078 0 0);
-  --sidebar-ring: oklch(0.7058 0 0);
-  --font-sans: Architects Daughter, sans-serif;
+  --background: #f7f7e1;
+  --foreground: #0f0f0f;
+  --card: #fffef5;
+  --card-foreground: #0f0f0f;
+  --popover: #fffef5;
+  --popover-foreground: #0f0f0f;
+  --primary: #0f0f0f;
+  --primary-foreground: #f7f7e1;
+  --secondary: #d4d4c8;
+  --secondary-foreground: #0f0f0f;
+  --muted: #e8e8dc;
+  --muted-foreground: #4a4a4a;
+  --accent: #b8b8a8;
+  --accent-foreground: #0f0f0f;
+  --destructive: #8b4513;
+  --destructive-foreground: #fffef5;
+  --border: #9a9a8a;
+  --input: #fffef5;
+  --ring: #6a6a5a;
+  --chart-1: #1a1a1a;
+  --chart-2: #2f2f2f;
+  --chart-3: #4a4a4a;
+  --chart-4: #6a6a6a;
+  --chart-5: #8a8a8a;
+  --sidebar: #f0f0e5;
+  --sidebar-foreground: #0f0f0f;
+  --sidebar-primary: #0f0f0f;
+  --sidebar-primary-foreground: #f7f7e1;
+  --sidebar-accent: #b8b8a8;
+  --sidebar-accent-foreground: #0f0f0f;
+  --sidebar-border: #9a9a8a;
+  --sidebar-ring: #6a6a5a;
+  --font-sans: "Schoolbell", cursive;
   --font-serif: "Times New Roman", Times, serif;
-  --font-mono: "Courier New", Courier, monospace;
+  --font-mono: "Shadows Into Light", cursive;
   --radius: 0.625rem;
   --shadow-x: 1px;
   --shadow-y: 4px;
@@ -103,41 +106,41 @@
 }
 
 .dark {
-  --background: oklch(0.2891 0 0);
-  --foreground: oklch(0.8945 0 0);
-  --card: oklch(0.3211 0 0);
-  --card-foreground: oklch(0.8945 0 0);
-  --popover: oklch(0.3211 0 0);
-  --popover-foreground: oklch(0.8945 0 0);
-  --primary: oklch(0.7572 0 0);
-  --primary-foreground: oklch(0.2891 0 0);
-  --secondary: oklch(0.4676 0 0);
-  --secondary-foreground: oklch(0.8078 0 0);
-  --muted: oklch(0.3904 0 0);
-  --muted-foreground: oklch(0.7058 0 0);
-  --accent: oklch(0.9067 0 0);
-  --accent-foreground: oklch(0.3211 0 0);
-  --destructive: oklch(0.7915 0.0491 18.241);
-  --destructive-foreground: oklch(0.2891 0 0);
-  --border: oklch(0.4276 0 0);
-  --input: oklch(0.3211 0 0);
-  --ring: oklch(0.8078 0 0);
-  --chart-1: oklch(0.9521 0 0);
-  --chart-2: oklch(0.8576 0 0);
-  --chart-3: oklch(0.7572 0 0);
-  --chart-4: oklch(0.6534 0 0);
-  --chart-5: oklch(0.5452 0 0);
-  --sidebar: oklch(0.2478 0 0);
-  --sidebar-foreground: oklch(0.8945 0 0);
-  --sidebar-primary: oklch(0.7572 0 0);
-  --sidebar-primary-foreground: oklch(0.2478 0 0);
-  --sidebar-accent: oklch(0.9067 0 0);
-  --sidebar-accent-foreground: oklch(0.3211 0 0);
-  --sidebar-border: oklch(0.4276 0 0);
-  --sidebar-ring: oklch(0.8078 0 0);
-  --font-sans: Architects Daughter, sans-serif;
+  --background: #2a2a2a;
+  --foreground: #f7f7e1;
+  --card: #1a1a1a;
+  --card-foreground: #f7f7e1;
+  --popover: #1a1a1a;
+  --popover-foreground: #f7f7e1;
+  --primary: #e8e8e8;
+  --primary-foreground: #0f0f0f;
+  --secondary: #4a4a4a;
+  --secondary-foreground: #d4d4d4;
+  --muted: #3a3a3a;
+  --muted-foreground: #9a9a9a;
+  --accent: #6a6a6a;
+  --accent-foreground: #f7f7e1;
+  --destructive: #b8704f;
+  --destructive-foreground: #f7f7e1;
+  --border: #5a5a5a;
+  --input: #1a1a1a;
+  --ring: #8a8a8a;
+  --chart-1: #f0f0f0;
+  --chart-2: #d0d0d0;
+  --chart-3: #b0b0b0;
+  --chart-4: #909090;
+  --chart-5: #707070;
+  --sidebar: #1f1f1f;
+  --sidebar-foreground: #f7f7e1;
+  --sidebar-primary: #e8e8e8;
+  --sidebar-primary-foreground: #1f1f1f;
+  --sidebar-accent: #6a6a6a;
+  --sidebar-accent-foreground: #f7f7e1;
+  --sidebar-border: #5a5a5a;
+  --sidebar-ring: #8a8a8a;
+  --font-sans: "Schoolbell", cursive;
   --font-serif: Georgia, serif;
-  --font-mono: "Fira Code", "Courier New", monospace;
+  --font-mono: "Shadows Into Light", cursive;
   --radius: 0.625rem;
   --shadow-x: 1px;
   --shadow-y: 4px;
@@ -222,7 +225,13 @@
 
 body {
   letter-spacing: var(--tracking-normal);
+  font-family: "Schoolbell", cursive !important;
 }
+
+* {
+  font-family: "Schoolbell", cursive !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -239,4 +248,145 @@ body {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
+}
+
+/* Effets sketch dessinés à la main */
+@keyframes sketch-border {
+  0%,
+  100% {
+    filter: url(#sketch-filter);
+  }
+  50% {
+    filter: url(#sketch-filter) brightness(1.05);
+  }
+}
+
+/* Bordures gribouillées irrégulières */
+.sketch-border {
+  position: relative;
+  border: none !important;
+}
+
+.sketch-border::before,
+.sketch-border::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.sketch-border::before {
+  background: linear-gradient(to right, #0f0f0f 0%, transparent 0%) top left /
+      100% 2px no-repeat,
+    linear-gradient(to right, #0f0f0f 0%, transparent 0%) bottom left / 100% 2px
+      no-repeat,
+    linear-gradient(to bottom, #0f0f0f 0%, transparent 0%) top left / 2px 100%
+      no-repeat,
+    linear-gradient(to bottom, #0f0f0f 0%, transparent 0%) top right / 2px 100%
+      no-repeat;
+  filter: url(#rough-border);
+  opacity: 0.7;
+}
+
+.sketch-border::after {
+  background: linear-gradient(to right, #0f0f0f 0%, transparent 0%) top left /
+      99% 2px no-repeat,
+    linear-gradient(to right, #0f0f0f 0%, transparent 0%) bottom left / 99% 2px
+      no-repeat,
+    linear-gradient(to bottom, #0f0f0f 0%, transparent 0%) top left / 2px 99%
+      no-repeat,
+    linear-gradient(to bottom, #0f0f0f 0%, transparent 0%) top right / 2px 99%
+      no-repeat;
+  transform: translate(1px, 1px);
+  filter: url(#rough-border);
+  opacity: 0.4;
+}
+
+/* Bordure ondulée simple (fallback) */
+.wavy-border {
+  border: 2px solid #0f0f0f;
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M0,10 Q5,5 10,10 T20,10 V0 H0 Z M0,10 Q5,15 10,10 T20,10 V20 H0 Z' fill='%230F0F0F'/%3E%3C/svg%3E")
+    20 stretch;
+  border-image-repeat: round;
+}
+
+/* Bordure visible gribouillée pour toutes les fenêtres */
+.visible-sketch-border {
+  position: relative;
+  border: 2px solid #0f0f0f;
+  filter: url(#rough-border);
+}
+
+.visible-sketch-border::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 2px solid #0f0f0f;
+  opacity: 0.4;
+  filter: url(#rough-border);
+  pointer-events: none;
+  transform: translate(1px, 1px);
+}
+
+/* Texture papier */
+.paper-texture {
+  background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(15, 15, 15, 0.01) 2px,
+      rgba(15, 15, 15, 0.01) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(15, 15, 15, 0.01) 2px,
+      rgba(15, 15, 15, 0.01) 4px
+    );
+  background-color: #f7f7e1;
+}
+
+/* Ombres douces grises */
+.sketch-shadow {
+  box-shadow: 2px 2px 0px rgba(15, 15, 15, 0.15),
+    3px 3px 0px rgba(15, 15, 15, 0.08), 4px 4px 0px rgba(15, 15, 15, 0.04);
+}
+
+.sketch-shadow-sm {
+  box-shadow: 1px 1px 0px rgba(15, 15, 15, 0.12),
+    2px 2px 0px rgba(15, 15, 15, 0.06);
+}
+
+/* Effet trait crayon */
+.pencil-line {
+  background: linear-gradient(
+    to right,
+    #0f0f0f 0%,
+    #2a2a2a 20%,
+    #0f0f0f 40%,
+    #1a1a1a 60%,
+    #0f0f0f 80%,
+    #2a2a2a 100%
+  );
+  height: 2px;
+  opacity: 0.8;
+}
+
+/* SVG Filters pour effets dessinés à la main */
+.svg-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+/* Empêcher le scroll natif du body sur mobile */
+html,
+body {
+  overflow: hidden;
+  touch-action: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
 }
