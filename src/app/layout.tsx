@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Schoolbell, Shadows_Into_Light } from "next/font/google";
 import "./globals.css";
+import CustomCursor from "@/components/CustomCursor";
 
 const schoolbell = Schoolbell({
   variable: "--font-schoolbell",
@@ -137,6 +138,7 @@ export default function RootLayout({
       <body
         className={`${schoolbell.variable} ${shadowsIntoLight.variable} min-h-screen bg-background font-sans antialiased`}
       >
+        <CustomCursor />
         {children}
       </body>
     </html>

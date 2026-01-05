@@ -226,10 +226,23 @@
 body {
   letter-spacing: var(--tracking-normal);
   font-family: "Schoolbell", cursive !important;
+  cursor: none;
 }
 
 * {
   font-family: "Schoolbell", cursive !important;
+  cursor: none;
+}
+
+/* Curseur avec scale sur les éléments cliquables */
+a,
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+select,
+.cursor-pointer {
+  cursor: none;
 }
 
 @layer base {

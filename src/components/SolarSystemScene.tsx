@@ -650,10 +650,10 @@ function Scene({
         t
       );
 
-      // Effet parallax avec la souris (léger décalage)
+      // Effet parallax avec la souris (décalage plus prononcé x2)
       const parallaxOffset = new THREE.Vector3(
-        mousePosition.x * 2,
-        mousePosition.y * 1.5,
+        mousePosition.x * 4,
+        mousePosition.y * 3,
         0
       );
       cameraPosition.add(parallaxOffset);
@@ -864,7 +864,7 @@ export default function SolarSystemScene() {
     let touchStartY = 0;
     let touchEndY = 0;
     let accumulatedDelta = 0; // Accumuler les petits scrolls
-    const deltaThreshold = 100; // Seuil minimum pour changer de planète
+    const deltaThreshold = 20; // Seuil minimum pour changer de planète (réduit pour plus de sensibilité)
     let lastScrollTime = 0; // Timestamp du dernier scroll traité
     const scrollCooldown = 1000; // Cooldown de 1s entre chaque changement de planète
 
