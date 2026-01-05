@@ -4,27 +4,117 @@
 
 Ce projet est un portfolio 3D développé avec Next.js 15, TypeScript, Tailwind CSS et React Three Fiber. Il présente mes projets sous forme d'un système solaire interactif avec une expérience immersive en 3D.
 
+## ⚠️ IMPORTANT - Architecture Modulaire (Janvier 2026)
+
+Le projet a été **entièrement réorganisé** en janvier 2026 d'un fichier monolithique de 1575 lignes vers une architecture modulaire de 47 fichiers.
+
+**Documentation complète** : Voir `ARCHITECTURE.md` et `REFACTORING_SUMMARY.md`
+
 ## Architecture du projet
 
 Le portfolio se compose d'une **seule page** : un système solaire 3D où chaque planète représente un projet.
 
-### Structure simplifiée
+### Structure du code
 
-- **Page d'accueil** (`/`) : Redirige automatiquement vers `/portfolio3d`
-- **Portfolio 3D** (`/portfolio3d`) : Expérience interactive principale
+```
+src/
+├── types/                    # Types TypeScript centralisés
+│   ├── project.ts           # Interface Project
+│   ├── three.ts             # Types Three.js (Position3D, MousePosition, etc.)
+│   └── index.ts
+│
+├── hooks/                    # Hooks React personnalisés
+│   ├── useScrollProgress.ts # Gestion du scroll avec easing
+│   ├── useResponsive.ts     # Détection responsive
+│   ├── useTypewriter.ts     # Effet typewriter
+│   └── index.ts
+│
+├── lib/                      # Utilitaires
+│   ├── utils.ts             # Utilitaires Tailwind (cn)
+│   └── three/               # Utilitaires Three.js
+│       ├── camera.ts        # Calculs de caméra et positions
+│       ├── animations.ts    # Animations de particules
+│       └── index.ts
+│
+├── components/
+│   ├── SolarSystemScene.tsx # Orchestrateur principal (~200 lignes)
+│   │
+│   └── portfolio3d/         # Composants du portfolio 3D
+│       ├── Scene3D.tsx      # Scene Three.js principale
+│       │
+│       ├── space/           # Éléments spatiaux
+│       │   ├── Sun.tsx
+│       │   ├── GalaxyParticles.tsx
+│       │   ├── FloatingParticles.tsx
+│       │   └── index.ts
+│       │
+│       ├── planets/         # Planètes et labels
+│       │   ├── PlanetGLB.tsx
+│       │   ├── PlanetSphere.tsx
+│       │   ├── PlanetLabel.tsx
+│       │   └── index.ts
+│       │
+│       ├── camera/          # Gestion caméra
+│       │   ├── CameraController.tsx
+│       │   └── index.ts
+│       │
+│       ├── terminal/        # Terminal interactif
+│       │   ├── Terminal.tsx
+│       │   ├── TerminalOverview.tsx
+│       │   ├── TerminalProject.tsx
+│       │   ├── TerminalInteractive.tsx
+│       │   └── index.ts
+│       │
+│       ├── ui/              # Composants UI
+│       │   ├── ContactWindow.tsx
+│       │   ├── ProgressIndicator.tsx
+│       │   ├── MusicControl.tsx
+│       │   ├── EnterScreen.tsx
+│       │   └── index.ts
+│       │
+│       └── index.ts         # Barrel export principal
+│
+├── data/
+│   └── projects.json        # Données des projets
+│
+└── app/                     # Routes Next.js
+    ├── page.tsx
+    ├── layout.tsx
+    └── portfolio3d/
+        └── page.tsx
+```
 
-### Composants
+### Composants Principaux
 
-- `SolarSystemScene.tsx` : Composant principal du portfolio 3D
-  - Système solaire avec planètes orbitales
-  - Split-screen responsive :
-    - **Desktop** : Terminal (30% gauche) + Canvas 3D (70% droite)
-    - **Mobile** : Canvas 3D (50% haut) + Terminal (50% bas)
-  - **Terminal interactif** avec commandes shell
-  - Typewriter effect pour l'affichage des projets
-  - Animations de caméra avec arcs paraboliques
-  - Navigation par scroll ou clic sur les labels
-  - Fenêtre de contact (desktop uniquement)
+#### SolarSystemScene.tsx
+
+- **Rôle** : Orchestrateur principal (200 lignes vs 1575 avant)
+- **Responsabilités** :
+  - Gestion de l'état global (scroll, musique, souris)
+  - Layout responsive
+  - Coordination des composants
+
+#### Scene3D.tsx
+
+- **Rôle** : Scene Three.js principale
+- **Responsabilités** :
+  - Rendu 3D (soleil, planètes, particules)
+  - Gestion des lumières
+  - Coordination caméra/planètes
+
+#### Terminal
+
+- **Modes** :
+  - **Overview** : Présentation personnelle
+  - **Project** : Détails du projet avec typewriter effect
+  - **Interactive** : Shell avec commandes (ls, cd, help, etc.)
+- **Key prop** : Utilise `key={currentProject.id}` pour forcer le remount et relancer l'animation
+
+#### CameraController
+
+- Calcul des positions avec easing
+- Transitions paraboliques
+- Effet parallax souris
 
 ### Données
 
@@ -157,6 +247,7 @@ Les projets sont stockés dans `/src/data/projects.json` avec la structure suiva
   - `cursor-pointer` sur éléments cliquables
   - `hover:bg-white/5` pour feedback subtil
   - Transitions avec `transition-all` ou `transition-colors`
+- **Curseur** : Le curseur système est activé (pas de curseur personnalisé)
 
 ### Fichiers et organisation
 
@@ -165,12 +256,21 @@ Les projets sont stockés dans `/src/data/projects.json` avec la structure suiva
   - `portfolio3d/page.tsx` : Page principale
   - `layout.tsx` : Layout simplifié sans header/footer
 - `src/components/` : Composants réutilisables
-  - `SolarSystemScene.tsx` : Le seul composant principal
+  - `SolarSystemScene.tsx` : Composant principal
+  - `portfolio3d/` : Tous les composants 3D modulaires
   - `ui/` : shadcn/ui components de base
-- `src/data/` : Données statiques
-  - `projects.json` : Tous les projets
+- `src/hooks/` : Hooks React personnalisés
+  - `useScrollProgress.ts` : Gestion scroll
+  - `useResponsive.ts` : Détection responsive
+  - `useTypewriter.ts` : Animation typewriter
+- `src/types/` : Types TypeScript centralisés
+  - `project.ts` : Interface Project
+  - `three.ts` : Types Three.js
 - `src/lib/` : Utilitaires
   - `utils.ts` : Helpers Tailwind
+  - `three/` : Utilitaires Three.js
+- `src/data/` : Données statiques
+  - `projects.json` : Tous les projets
 
 ## Bonnes pratiques
 
@@ -183,6 +283,8 @@ Les projets sont stockés dans `/src/data/projects.json` avec la structure suiva
 4. **TypeScript** : Typage strict, interfaces pour les props 3D
 5. **Git** : Commits clairs et atomiques en français
 6. **Animation** : Utiliser requestAnimationFrame pour la fluidité
+7. **Modularité** : Composants isolés avec une seule responsabilité
+8. **Barrel exports** : Utiliser `index.ts` pour simplifier les imports
 
 ## Ajout d'un nouveau projet
 
@@ -191,6 +293,10 @@ Pour ajouter un nouveau projet:
 1. Ajouter l'image dans `/public/projects/`
 2. Ajouter l'entrée dans `/src/data/projects.json`
 3. Le système solaire créera automatiquement une nouvelle planète
+
+## Debugging du Terminal
+
+Le terminal utilise une **key prop** basée sur l'ID du projet (`key={currentProject.id}`) pour forcer le remount et relancer l'animation typewriter à chaque changement de projet. C'est essentiel pour que l'animation fonctionne correctement sur tous les projets, y compris le premier.
 
 ## Technologies principales
 

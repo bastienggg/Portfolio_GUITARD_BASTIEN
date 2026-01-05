@@ -1,7 +1,7 @@
 {
   "name": "Bastien Guitard - Portfolio 3D",
   "short_name": "BG Portfolio",
-  "description": "Portfolio interactif 3D de Bastien Guitard, développeur full-stack",
+  "description": "Mon portoflio de développeur full-stack",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F7F7E1",
