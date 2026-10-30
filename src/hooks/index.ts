@@ -1,6 +1,7 @@
 /**
  * Barrel export pour tous les hooks
  */
-export * from "./useResponsive";
+export * from "./useBackgroundMusic";
+export * from "./useMousePosition";
 export * from "./useTypewriter";
 export * from "./useScrollProgress";

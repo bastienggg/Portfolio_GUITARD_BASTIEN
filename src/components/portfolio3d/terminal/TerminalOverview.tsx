@@ -1,7 +1,5 @@
 "use client";
 
-import type { Project } from "@/types";
-
 interface TerminalOverviewProps {
   onActivate: () => void;
 }

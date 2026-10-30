@@ -40,11 +40,6 @@ export interface MousePosition {
 export type GroupRef = THREE.Group | null;
 
 /**
- * Type pour les références de mesh Three.js
- */
-export type MeshRef = THREE.Mesh | null;
-
-/**
  * Type pour les références de points Three.js
  */
 export type PointsRef = THREE.Points | null;

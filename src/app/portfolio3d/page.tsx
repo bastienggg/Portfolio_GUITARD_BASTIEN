@@ -1,4 +1,4 @@
-import SolarSystemScene from "@/components/SolarSystemScene";
+import { SolarSystemScene } from "@/components/portfolio3d/SolarSystemScene";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

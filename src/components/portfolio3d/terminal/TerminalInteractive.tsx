@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { runCommand } from "./commands";
 import type { Project } from "@/types";
 
 interface TerminalInteractiveProps {
@@ -39,83 +40,19 @@ export function TerminalInteractive({
     const trimmedCmd = cmd.trim();
     if (!trimmedCmd) return;
 
-    setTerminalHistory((prev) => [...prev, `> ${trimmedCmd}`]);
+    const result = runCommand(trimmedCmd, projects);
 
-    const [command, ...args] = trimmedCmd.split(" ");
-    const arg = args.join(" ");
-
-    switch (command.toLowerCase()) {
-      case "ls":
-        const projectList = projects
-          .map((p, i) => `  [${i}] ${p.title} - ${p.status}`)
-          .join("\n");
-        setTerminalHistory((prev) => [
-          ...prev,
-          `\nProjets disponibles:\n${projectList}\n`,
-        ]);
-        break;
-
-      case "cd":
-        if (!arg) {
-          setTerminalHistory((prev) => [
-            ...prev,
-            'Erreur: Spécifiez un projet (ex: cd 0 ou cd "Dot TXT")\n',
-          ]);
-        } else {
-          let projectIndex = -1;
-          const numArg = parseInt(arg);
-
-          if (!isNaN(numArg) && numArg >= 0 && numArg < projects.length) {
-            projectIndex = numArg;
-          } else {
-            projectIndex = projects.findIndex(
-              (p) =>
-                p.title.toLowerCase().includes(arg.toLowerCase()) ||
-                p.id.toLowerCase() === arg.toLowerCase()
-            );
-          }
-
-          if (projectIndex >= 0) {
-            onNavigate(projectIndex);
-            setTerminalHistory((prev) => [
-              ...prev,
-              `Navigation vers: ${projects[projectIndex].title}\n`,
-            ]);
-            onExit();
-          } else {
-            setTerminalHistory((prev) => [
-              ...prev,
-              `Projet non trouvé: "${arg}"\n`,
-            ]);
-          }
-        }
-        break;
-
-      case "help":
-        const helpText = `\nCommandes disponibles:\n  ls              - Liste tous les projets\n  cd [projet]     - Navigue vers un projet (par index ou nom)\n  help            - Affiche cette aide\n  clear           - Efface le terminal\n  whoami          - Informations sur le développeur\n  exit            - Quitte le mode interactif\n`;
-        setTerminalHistory((prev) => [...prev, helpText]);
-        break;
-
-      case "clear":
-        setTerminalHistory([]);
-        break;
-
-      case "whoami":
-        const aboutText = `\n╔══════════════════════════════════════╗\n║     BASTIEN GUITARD                  ║\n║     Développeur Full-Stack           ║\n╚══════════════════════════════════════╝\n\nÉtudiant en 3ème année BUT MMI\nPassionné par le développement web et les dispositifs interactifs\n\nGitHub: github.com/bastienggg\nLinkedIn: linkedin.com/in/bastien-guitard-30585329b\n`;
-        setTerminalHistory((prev) => [...prev, aboutText]);
-        break;
-
-      case "exit":
-        onExit();
-        setTerminalHistory([]);
-        break;
-
-      default:
-        setTerminalHistory((prev) => [
-          ...prev,
-          `Commande inconnue: "${command}". Tapez "help" pour voir les commandes disponibles.\n`,
-        ]);
+    if (result.clear) {
+      setTerminalHistory([]);
+    } else {
+      setTerminalHistory((prev) => [
+        ...prev,
+        `> ${trimmedCmd}`,
+        ...result.output,
+      ]);
     }
+    if (result.navigateTo !== undefined) onNavigate(result.navigateTo);
+    if (result.exit) onExit();
 
     setCurrentCommand("");
   };
