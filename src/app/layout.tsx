@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Schoolbell, Shadows_Into_Light } from "next/font/google";
+import { profile } from "@/data/profile";
 import "./globals.css";
 
 const schoolbell = Schoolbell({
@@ -97,15 +98,12 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
-    name: "Bastien Guitard",
-    jobTitle: "Développeur Full-Stack",
+    name: profile.name,
+    jobTitle: profile.role,
     description:
       "Développeur full-stack et créatif, étudiant en 3ème année BUT MMI",
-    url: "https://bastienguitard.fr",
-    sameAs: [
-      "https://github.com/bastienggg",
-      "https://www.linkedin.com/in/bastien-guitard-30585329b/",
-    ],
+    url: profile.url,
+    sameAs: [profile.github, profile.linkedin],
     knowsAbout: [
       "React",
       "Next.js",

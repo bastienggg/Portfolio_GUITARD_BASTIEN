@@ -6,4 +6,6 @@ export * from "./planets";
 export * from "./camera";
 export * from "./terminal";
 export * from "./ui";
+export * from "./layout";
 export * from "./Scene3D";
+export * from "./SolarSystemScene";

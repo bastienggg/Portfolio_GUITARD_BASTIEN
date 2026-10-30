@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
  */
 export function useTypewriter(text: string, speed: number = 5) {
   const [displayedText, setDisplayedText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
     setIsTyping(true);

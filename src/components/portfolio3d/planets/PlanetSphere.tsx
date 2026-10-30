@@ -1,17 +1,10 @@
 "use client";
 
-import { useRef } from "react";
-import type {
-  Position3DProps,
-  ActiveStateProps,
-  MeshRef,
-  Project,
-} from "@/types";
+import type { Position3DProps, ActiveStateProps } from "@/types";
 
 interface PlanetSphereProps extends Position3DProps, ActiveStateProps {
   color: string;
   size: number;
-  project: Project;
 }
 
 /**
@@ -23,11 +16,9 @@ export function PlanetSphere({
   size,
   isActive,
 }: PlanetSphereProps) {
-  const meshRef = useRef<MeshRef>(null);
-
   return (
     <group position={position}>
-      <mesh ref={meshRef}>
+      <mesh>
         <sphereGeometry args={[size, 32, 32]} />
         <meshStandardMaterial
           color={color}
