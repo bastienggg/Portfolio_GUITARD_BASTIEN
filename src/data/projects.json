@@ -1,67 +1,274 @@
 [
   {
-    "id": "dot-txt",
+    "enabled": true,
+    "slug": "dot-txt",
     "title": "Dot TXT",
-    "description": "Une aplication de prise de note collaborative en temps réel. Le projet à été selctionner pour être utiliser au seins de l'université de Limoges",
-    "longDescription": "Une application de prise de note collaborative en temps réel inspirée de Google Docs. Elle permet à plusieurs utilisateurs de créer, modifier et organiser des notes simultanément avec une synchronisation instantanée.",
-    "technologies": [
+    "kind": "temps réel",
+    "status": "in-progress",
+    "planet": {
+      "color": "#3D4BE0",
+      "spot": "#F3EFE3",
+      "size": 1,
+      "ring": false,
+      "model": "/projects/dottxt2.glb"
+    },
+    "tagline": "Écrire à plusieurs sur la même note, sans jamais se marcher dessus,",
+    "taglineAccent": "en temps réel.",
+    "summary": "Une application inspirée de Google Docs : plusieurs personnes créent, modifient et organisent les mêmes notes simultanément, avec une synchronisation instantanée.",
+    "role": "[Dév full-stack]",
+    "context": "[Projet perso]",
+    "duration": "[X semaines]",
+    "team": "[Solo]",
+    "year": "[2025]",
+    "stack": [
       "Next.js",
       "TypeScript",
-      "React.js",
+      "React",
       "Pinia",
       "Socket.io",
       "Node.js",
       "Docker"
     ],
-    "githubUrl": "https://github.com/bastienggg/Dot_TXT",
-    "demoUrl": "https://dot-txt.fr",
-    "imageUrl": "/projects/dottxt.png",
-    "modelPath": "/projects/dottxt2.glb",
-    "status": "in-progress",
-    "featured": true
+    "links": {
+      "demo": "https://dot-txt.fr",
+      "github": "https://github.com/bastienggg/Dot_TXT"
+    },
+    "preview": "/projects/dottxt.png",
+    "cover": "/projects/dottxt.png",
+    "intro": "Une application de prise de notes collaborative inspirée de Google Docs. [Le cadre du projet et pourquoi tu l'as lancé.]",
+    "tasks": [
+      "[Architecture temps réel avec Socket.io]",
+      "[Interface de l'éditeur en Next.js]",
+      "[Conteneurisation avec Docker]"
+    ],
+    "goal": "[Synchroniser des modifications simultanées sans perte ni conflit.]",
+    "features": [
+      {
+        "title": "Édition simultanée",
+        "text": "Plusieurs utilisateurs écrivent dans la même note."
+      },
+      {
+        "title": "Synchro instantanée",
+        "text": "Les changements arrivent sans rechargement."
+      },
+      {
+        "title": "Organisation",
+        "text": "Créer, ranger et retrouver ses notes."
+      }
+    ],
+    "techChoices": [
+      {
+        "tech": "Socket.io",
+        "why": "[Pourquoi ce choix]"
+      },
+      {
+        "tech": "Next.js",
+        "why": "[Pourquoi ce choix]"
+      },
+      {
+        "tech": "Docker",
+        "why": "[Pourquoi ce choix]"
+      }
+    ],
+    "challenge": {
+      "problem": "[Deux personnes modifient la même ligne au même moment.]",
+      "solution": "[Comment tu l'as résolu, en 2–3 phrases.]"
+    },
+    "result": "[Où en est le projet, ce qui fonctionne.]",
+    "learned": "[Ton apprentissage principal, et ce que tu ferais différemment.]",
+    "gallery": [
+      "",
+      "",
+      ""
+    ]
   },
   {
-    "id": "trois-fois-rien",
+    "enabled": true,
+    "slug": "trois-fois-rien",
     "title": "Trois Fois Rien",
-    "description": "Un site de presentation pour Trois fois rien un collectif de designers qui imagine et fabrique des projets culturels accessibles, créatifs et ancrés dans le réel.",
-    "longDescription": "Un site de presentation pour Trois fois rien un collectif de designers qui imagine et fabrique des projets culturels accessibles, créatifs et ancrés dans le réel.",
-    "technologies": [
+    "kind": "site vitrine",
+    "status": "in-progress",
+    "planet": {
+      "color": "#D94A3D",
+      "spot": "#9E2F26",
+      "size": 0.82,
+      "ring": false,
+      "model": "/projects/tfr.glb"
+    },
+    "tagline": "Le site d'un collectif qui fabrique des projets culturels",
+    "taglineAccent": "ancrés dans le réel.",
+    "summary": "Un site de présentation pour Trois Fois Rien, un collectif de designers qui imagine et fabrique des projets culturels accessibles, créatifs et ancrés dans le réel.",
+    "role": "[Dév + intégration]",
+    "context": "[Client]",
+    "duration": "[X semaines]",
+    "team": "[…]",
+    "year": "[2025]",
+    "stack": [
       "Next.js",
       "TypeScript",
-      "React.js",
+      "React",
       "NeonDB",
       "Prisma",
-      "TailwindCSS",
+      "Tailwind",
       "Framer Motion",
       "Figma"
     ],
-    "githubUrl": "https://github.com/bastienggg",
-    "demoUrl": "https://github.com/bastienggg",
-    "imageUrl": "/projects/troisfoisrien.png",
-    "modelPath": "/projects/tfr.glb",
-    "status": "in-progress",
-    "featured": true
+    "links": {
+      "demo": "",
+      "github": ""
+    },
+    "preview": "/projects/troisfoisrien.png",
+    "cover": "/projects/troisfoisrien.png",
+    "intro": "Un site vitrine pour le collectif Trois Fois Rien. [Qui est le collectif, ce qu'il attendait du site.]",
+    "tasks": [
+      "[Tâche 1]",
+      "[Tâche 2]",
+      "[Tâche 3]"
+    ],
+    "goal": "[L'objectif du site en une phrase.]",
+    "features": [
+      {
+        "title": "[Fonction 1]",
+        "text": "[Une phrase.]"
+      },
+      {
+        "title": "[Fonction 2]",
+        "text": "[Une phrase.]"
+      },
+      {
+        "title": "Animations",
+        "text": "[Ce que Framer Motion apporte.]"
+      }
+    ],
+    "techChoices": [
+      {
+        "tech": "Next.js",
+        "why": "[Pourquoi]"
+      },
+      {
+        "tech": "Prisma + NeonDB",
+        "why": "[Pourquoi]"
+      },
+      {
+        "tech": "Framer Motion",
+        "why": "[Pourquoi]"
+      }
+    ],
+    "challenge": {
+      "problem": "[Le défi principal.]",
+      "solution": "[La solution.]"
+    },
+    "result": "[Le résultat.]",
+    "learned": "[L'apprentissage.]",
+    "gallery": [
+      "",
+      "",
+      ""
+    ]
   },
   {
-    "id": "habit-tracker",
+    "enabled": true,
+    "slug": "habitz",
     "title": "Ha'Bitz",
-    "description": "Une aplication de suivi des habitudes pour vous aider à atteindre vos objectifs quotidiens.",
-    "longDescription": "Une application de suivi des habitudes qui permet aux utilisateurs de définir, suivre et analyser leurs habitudes quotidiennes. L'application offre des rappels, des statistiques et des graphiques pour aider les utilisateurs à rester motivés et à atteindre leurs objectifs.",
-    "technologies": ["Next.js", "TypeScript", "React.js", "NeonDB", "Prisma"],
-    "githubUrl": "https://github.com/bastienggg/Habit_Tracker",
-    "demoUrl": "https://habit-tracker-beige-psi.vercel.app/",
-    "imageUrl": "/projects/habittracker.png",
-    "modelPath": "/projects/HabitTracker4.glb",
+    "kind": "app habitudes",
     "status": "in-progress",
-    "featured": false
+    "planet": {
+      "color": "#2F7D4F",
+      "spot": "#A7D7A0",
+      "size": 1.12,
+      "ring": false,
+      "model": "/projects/HabitTracker4.glb"
+    },
+    "tagline": "Définir, suivre et analyser ses habitudes",
+    "taglineAccent": "pour tenir dans la durée.",
+    "summary": "Une application de suivi des habitudes : rappels, statistiques et graphiques pour aider les utilisateurs à rester motivés et à atteindre leurs objectifs.",
+    "role": "[Dév full-stack]",
+    "context": "[…]",
+    "duration": "[X semaines]",
+    "team": "[…]",
+    "year": "[2025]",
+    "stack": [
+      "Next.js",
+      "TypeScript",
+      "React",
+      "NeonDB",
+      "Prisma"
+    ],
+    "links": {
+      "demo": "https://habit-tracker-beige-psi.vercel.app/",
+      "github": "https://github.com/bastienggg/Habit_Tracker"
+    },
+    "preview": "/projects/habittracker.png",
+    "cover": "/projects/habittracker.png",
+    "intro": "Une app pour définir, suivre et analyser ses habitudes quotidiennes. [Le cadre et pourquoi.]",
+    "tasks": [
+      "[Tâche 1]",
+      "[Tâche 2]",
+      "[Tâche 3]"
+    ],
+    "goal": "[L'objectif en une phrase.]",
+    "features": [
+      {
+        "title": "Rappels",
+        "text": "[Une phrase.]"
+      },
+      {
+        "title": "Statistiques",
+        "text": "[Une phrase.]"
+      },
+      {
+        "title": "Graphiques",
+        "text": "[Une phrase.]"
+      }
+    ],
+    "techChoices": [
+      {
+        "tech": "Next.js",
+        "why": "[Pourquoi]"
+      },
+      {
+        "tech": "Prisma",
+        "why": "[Pourquoi]"
+      },
+      {
+        "tech": "NeonDB",
+        "why": "[Pourquoi]"
+      }
+    ],
+    "challenge": {
+      "problem": "[Le défi principal.]",
+      "solution": "[La solution.]"
+    },
+    "result": "[Le résultat.]",
+    "learned": "[L'apprentissage.]",
+    "gallery": [
+      "",
+      "",
+      ""
+    ]
   },
-
   {
-    "id": "jeu-3d-webgl",
+    "enabled": true,
+    "slug": "let-him-quizz",
     "title": "Let Him Quizz",
-    "description": "Un jeu 3D interactif développé avec Three.js et A-Frame.",
-    "longDescription": "Un jeu 3D immersif jouable en VR qui a pour but de faire apprendre l'anglais grâce à une suite de mini jeux. Ce jeu a été inspiré par des jeux TV du style Question pour un champion.",
-    "technologies": [
+    "kind": "jeu VR",
+    "status": "completed",
+    "planet": {
+      "color": "#4F8FC0",
+      "spot": "#F3EFE3",
+      "size": 1.3,
+      "ring": true,
+      "model": "/projects/lethimquizz.glb"
+    },
+    "tagline": "Apprendre l'anglais comme sur un plateau télé,",
+    "taglineAccent": "en réalité virtuelle.",
+    "summary": "Un jeu 3D immersif jouable en VR pour apprendre l'anglais à travers une suite de mini-jeux, inspiré des jeux télé comme Questions pour un champion.",
+    "role": "[…]",
+    "context": "[Projet école]",
+    "duration": "[X semaines]",
+    "team": "[…]",
+    "year": "[2024]",
+    "stack": [
       "Three.js",
       "A-Frame",
       "WebGL",
@@ -69,24 +276,138 @@
       "HTML",
       "CSS"
     ],
-    "githubUrl": "https://github.com/bastienggg/Let_him_quizz",
-    "demoUrl": "https://lethimquiz.bastienguitard.fr",
-    "imageUrl": "/projects/lethimquizz.png",
-    "modelPath": "/projects/lethimquizz.glb",
-    "status": "completed",
-    "featured": false
+    "links": {
+      "demo": "https://lethimquiz.bastienguitard.fr",
+      "github": "https://github.com/bastienggg/Let_him_quizz"
+    },
+    "preview": "/projects/lethimquizz.png",
+    "cover": "/projects/lethimquizz.png",
+    "intro": "Un jeu VR inspiré des jeux télé pour apprendre l'anglais. [Le cadre et pourquoi.]",
+    "tasks": [
+      "[Tâche 1]",
+      "[Tâche 2]",
+      "[Tâche 3]"
+    ],
+    "goal": "[L'objectif en une phrase.]",
+    "features": [
+      {
+        "title": "Mini-jeux",
+        "text": "[Une phrase.]"
+      },
+      {
+        "title": "Plateau VR",
+        "text": "[Une phrase.]"
+      },
+      {
+        "title": "Progression",
+        "text": "[Une phrase.]"
+      }
+    ],
+    "techChoices": [
+      {
+        "tech": "A-Frame",
+        "why": "[Pourquoi]"
+      },
+      {
+        "tech": "Three.js",
+        "why": "[Pourquoi]"
+      },
+      {
+        "tech": "WebGL",
+        "why": "[Pourquoi]"
+      }
+    ],
+    "challenge": {
+      "problem": "[Le défi principal.]",
+      "solution": "[La solution.]"
+    },
+    "result": "Jeu terminé. [Retours, contexte de présentation.]",
+    "learned": "[L'apprentissage.]",
+    "gallery": [
+      "",
+      "",
+      ""
+    ]
   },
   {
-    "id": "zippy",
-    "title": "Zippy The Mouse",
-    "description": "Projet gagant de La Nuit MMI 2025, ou le but etais de faire un jeu 2D en 24h",
-    "longDescription": "Un jeu 2D developper en javascrit avec P5Play.js qui sert à faire de la prévention contre la pullution digital.Dans Ce je on incarne Zippy une petite souris qui lutter contre malware et mail frauduleux",
-    "technologies": ["JavaScript", "HTML", "CSS", "P5Play.js", "Tailwind"],
-    "githubUrl": "https://github.com/bastienggg/ZippyTheMouse",
-    "demoUrl": "https://zippy.bastienguitard.fr",
-    "imageUrl": "/projects/zippy.png",
-    "modelPath": "/projects/zippy2.glb",
+    "enabled": true,
+    "slug": "zippy-the-mouse",
+    "title": "Zippy the Mouse",
+    "kind": "jeu 2D",
     "status": "completed",
-    "featured": false
+    "planet": {
+      "color": "#F3EFE3",
+      "spot": "#141414",
+      "size": 1,
+      "ring": false,
+      "model": "/projects/zippy2.glb"
+    },
+    "tagline": "Une petite souris contre les malwares",
+    "taglineAccent": "pour sensibiliser à la pollution numérique.",
+    "summary": "Un jeu 2D en JavaScript avec p5play : on incarne Zippy, une petite souris qui lutte contre les malwares et les mails frauduleux.",
+    "role": "[Dév + game design]",
+    "context": "[Projet école]",
+    "duration": "[X semaines]",
+    "team": "[…]",
+    "year": "[2024]",
+    "stack": [
+      "JavaScript",
+      "HTML",
+      "CSS",
+      "p5play",
+      "Tailwind"
+    ],
+    "links": {
+      "demo": "https://zippy.bastienguitard.fr/",
+      "github": "https://github.com/bastienggg/ZippyTheMouse"
+    },
+    "preview": "/projects/zippy.png",
+    "cover": "/projects/zippy.png",
+    "intro": "Un jeu 2D pensé pour faire de la prévention contre la pollution numérique. [Le cadre et pour qui.]",
+    "tasks": [
+      "[Game design et gameplay]",
+      "[Développement avec p5play]",
+      "[Interface et menus]"
+    ],
+    "goal": "[Apprendre à repérer les menaces numériques en jouant.]",
+    "features": [
+      {
+        "title": "Incarner Zippy",
+        "text": "[Le principe de jeu.]"
+      },
+      {
+        "title": "Malwares & phishing",
+        "text": "Les ennemis : malwares et mails frauduleux."
+      },
+      {
+        "title": "Prévention",
+        "text": "[Comment le message passe.]"
+      }
+    ],
+    "techChoices": [
+      {
+        "tech": "p5play",
+        "why": "[Pourquoi]"
+      },
+      {
+        "tech": "JavaScript",
+        "why": "[Pourquoi]"
+      },
+      {
+        "tech": "Tailwind",
+        "why": "[Pourquoi]"
+      }
+    ],
+    "challenge": {
+      "problem": "[Rendre un sujet sérieux amusant sans le banaliser.]",
+      "solution": "[La solution.]"
+    },
+    "result": "Jeu terminé et jouable en ligne. [Retours.]",
+    "learned": "[L'apprentissage.]",
+    "gallery": [
+      "",
+      "",
+      ""
+    ]
   }
 ]

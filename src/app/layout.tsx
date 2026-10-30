@@ -1,16 +1,22 @@
 import type { Metadata } from "next";
-import { Schoolbell, Shadows_Into_Light } from "next/font/google";
+import { Archivo, JetBrains_Mono, Schoolbell } from "next/font/google";
 import { profile } from "@/data/profile";
 import "./globals.css";
 
-const schoolbell = Schoolbell({
-  variable: "--font-schoolbell",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  weight: ["400"],
+  axes: ["wdth"],
 });
 
-const shadowsIntoLight = Shadows_Into_Light({
-  variable: "--font-shadows",
+const jetbrains = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
+const schoolbell = Schoolbell({
+  variable: "--font-schoolbell",
   subsets: ["latin"],
   weight: ["400"],
 });
@@ -117,24 +123,25 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="fr">
+    <html
+      lang="fr"
+      className={`${archivo.variable} ${jetbrains.variable} ${schoolbell.variable}`}
+    >
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#F7F7E1" />
+        <meta name="theme-color" content="#F3EFE3" />
         <meta
           name="apple-mobile-web-app-status-bar-style"
           content="black-translucent"
         />
-        <meta name="msapplication-navbutton-color" content="#F7F7E1" />
+        <meta name="msapplication-navbutton-color" content="#F3EFE3" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
-      <body
-        className={`${schoolbell.variable} ${shadowsIntoLight.variable} min-h-screen bg-background font-sans antialiased`}
-      >
+      <body>
         {children}
       </body>
     </html>

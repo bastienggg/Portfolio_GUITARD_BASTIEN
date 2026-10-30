@@ -14,35 +14,38 @@ There is no lint or test script configured in this repo (no ESLint config, no te
 
 ## Architecture
 
-This is a **single-page 3D portfolio**: a solar system where each planet represents a project. `src/app/page.tsx` shows a brief loading screen and redirects to `/portfolio3d`, which renders `SolarSystemScene` (`src/components/portfolio3d/SolarSystemScene.tsx`) — a thin orchestrator that wires hooks (scroll, music, mouse) to the two layout panels.
+A **3D portfolio** styled as a "space logbook": a solar system where each planet is a project, rendered with React Three Fiber, with ink-on-paper "windows" layered on top. It is a port of `portfolio-reference.html` (the original standalone mock-up, kept at the repo root as the visual reference).
+
+### Routing
+
+All pages live in the `src/app/(space)/` route group, whose `layout.tsx` renders `SpaceShell` (`src/components/space/SpaceShell.tsx`). The shell — 3D canvas, top bar, bottom HUD, panels, intro — **stays mounted across navigations**, so the camera animates between views. The pages themselves return `null` and only provide URLs + metadata:
+
+- `/` → system view (the "ENTRER" intro shows only when landing directly on `/`)
+- `/planete/[slug]` → planet focus view
+- `/projets/[slug]` → "rapport de mission" (project detail, rendered server-side too for SEO)
+
+`SpaceShell` derives `view` (`intro | system | focus | report`) and the current project index from `usePathname()`, and sets `data-view` / `data-mode` on `#app`; show/hide transitions are pure CSS keyed on those attributes (`globals.css`). `/portfolio3d` redirects to `/` (`next.config.ts`).
 
 ### Data flow
 
-- `src/data/profile.ts` holds personal info (name, role, email, GitHub, LinkedIn) reused by the contact window and the JSON-LD in `layout.tsx`.
-- `src/data/projects.json` is the single source of truth for projects (typed via `src/types/project.ts`). Adding a project = add an image to `public/projects/` + add an entry to `projects.json`; a new planet appears automatically.
-- `useScrollProgress` (`src/hooks/useScrollProgress.ts`) drives navigation: `scrollProgress` is a float where `-1` = overview mode and each integer `n` = the planet/project at index `n`. `SolarSystemScene` derives `currentPlanetIndex` and `isOverviewMode` from it and passes the current `Project` down.
+- `src/data/projects.json` is the single source of truth (typed by `src/types/project.ts`, helpers in `src/lib/projects.ts`). Adding an entry adds a planet, a list row, a HUD step and a report page; `"enabled": false` hides a project everywhere (filtered in `lib/projects.ts`, its URLs 404). Each planet renders its `.glb` model from `planet.model` (in `public/projects/`, auto-scaled to `planet.size` by `scene/GlbModel.tsx`, also shown spinning at the top of the report); without a model it falls back to a generated low-poly sphere using `planet.color`/`spot`. `color` is still used for the list dots (and as fallback in the "next mission" block). The sun is `public/projects/soleil.glb`; empty `preview`/`cover`/`gallery` entries render hatched placeholders, empty `links.demo`/`links.github` render disabled buttons.
+- `src/data/profile.ts` holds personal info (email, GitHub, LinkedIn) used by the hero and the JSON-LD in `layout.tsx`.
 
-### Component layout (`src/components/portfolio3d/`)
+### Components (`src/components/space/`)
 
-- `SolarSystemScene.tsx` — entry component: `EnterScreen` gate, `MusicControl`, `RoughBorderFilter`, `TerminalPanel`, `ScenePanel`.
-- `layout/` — `TerminalPanel` (left 30% / bottom on mobile) and `ScenePanel` (right 70% / top on mobile, holds the `<Canvas>`, `ProgressIndicator`, `ContactWindow`).
-- `Scene3D.tsx` — the actual `<Canvas>` contents: sun, planets, particles, lights, camera coordination.
-- `space/` — `Sun`, `GalaxyParticles`, `FloatingParticles`, `SceneLights`.
-- `planets/` — `PlanetGLB` / `PlanetSphere` (mesh rendering) and `PlanetLabel` (billboard text via `quaternion.copy(camera.quaternion)`).
-- `camera/CameraController.tsx` — eases the camera toward `planetPos + direction * 20`, elevation `planetPos.y + 3`, easing factor `0.08`, scroll debounce `800ms`, parabolic transition arc (`8 * sin(t * π)`).
-- `terminal/` — `Terminal.tsx` switches between three modes: **Overview** (personal intro), **Project** (typewriter-animated project details), **Interactive** (shell with `ls`, `cd`, `help`, etc. — command logic is the pure `runCommand` in `terminal/commands.ts`). It's remounted via `key={currentProject.id}` to restart the typewriter animation on every project change — don't remove that key.
-- `ui/` — `WindowTitleBar` (sketch title bar, `md`/`sm` sizes — reuse it for any new window), `ContactWindow` (+ `ContactLinks`, `ProjectPreview`), `ProgressIndicator`, `MusicControl`, `EnterScreen` (gates entry so the ambient audio track can start on a user gesture), `LoadingScreen`, `RoughBorderFilter` / `HandDrawnDivider` (SVG `#rough-border` filter and its usage).
+- `sceneState.ts` — mutable state shared between React and the render loop (`sceneState`, `planetWorld`, `overlayEls`) so `useFrame` reads it without re-renders. Also orbit constants.
+- `scene/` — `SpaceCanvas` (Canvas, lights ×π to match the legacy three r128 intensities), `Sun`, `Planet` (orbit line, GLB or low-poly body, hover/click), `GlbModel` (loads + normalises a .glb), `DustBelt`, `CameraRig` (lerp toward overview/focus target + `setViewOffset` to shift framing), `OverlaySync` (projects planet positions to place HTML labels/hover card each frame), `lowPoly.ts` (faceted geometry generator). `CameraRig` and `OverlaySync` must stay after the planets in the JSX so they read the current frame's positions.
+- `ui/` — `TopBar`, `Hud`, `Hero`, `ProjectList`, `FocusPanel` (+ preview window, orbit note), `PlanetOverlays` (labels + hover card), `IntroScreen`, `bits.tsx` (status dot/pill, placeholder image, link button).
+- `report/MissionReport.tsx` — the project detail page; `report/ReportPlanet.tsx` is its small canvas showing the project's .glb.
 
-### Supporting code
+### Hooks
 
-- `src/hooks/` — `useScrollProgress`, `useBackgroundMusic`, `useMousePosition`, `useTypewriter`.
-- `src/lib/three/` — `camera.ts` (position/easing math) and `animations.ts` (particle animation) used by the 3D layer.
-- `src/types/` — `project.ts` (Project interface), `three.ts` (Position3D, MousePosition, etc.).
-- Path alias `@/*` maps to `src/*`.
+- `useBackgroundMusic` — the mp3 ambience (`public/mysterious-futuristic-ambience-375832.mp3`), started by the "ENTRER" click.
+- `useSpaceNavigation` — keyboard (← → Esc, Enter on intro), wheel and swipe navigation between system and planets.
 
 ## Conventions
 
 - Client components (`"use client"`) for anything interactive/3D; keep server-only concerns (metadata, etc.) in `layout.tsx`.
-- React Three Fiber: `useFrame` for per-frame animation, `useRef` for camera/mesh refs, `useMemo` for geometries to avoid recompute.
-- Visual style is a hand-drawn paper sketch: paper background `#F7F7E1`/`#FFFEF5`, ink `#0F0F0F` with greys `#2A2A2A`/`#4A4A4A`/`#9A9A8A`, handwritten fonts (Schoolbell, Shadows Into Light), helper classes in `globals.css` (`paper-texture`, `pencil-line`, `sketch-shadow`, `visible-sketch-border`); responsive breakpoint is `md:` (768px), mobile-first.
+- React Three Fiber: `useFrame` for per-frame animation, `useRef` for mesh refs, `useMemo` for geometries (dispose them on unmount).
+- Visual style is a squared-paper space logbook: paper `--paper #F3EFE3`, ink `--ink #141414`, single accent `--accent #2E3BDB`, sun yellow `#F2C94C`; fonts Archivo (display, variable width), JetBrains Mono, Schoolbell (handwritten notes) loaded via `next/font`. Styles are plain CSS classes in `globals.css` (ported from the reference); responsive breakpoint is `max-width: 900px`.
 - Git commit messages in this repo are written in French.
