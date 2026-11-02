@@ -122,7 +122,7 @@ export function MissionReport({ index, active, go }: MissionReportProps) {
             <div className="r-feats">
               {p.features.map((f, k) => (
                 <article key={k} className="r-feat">
-                  <div className="ph">[image]</div>
+                  <Placeholder src={f.image} alt={`image : ${f.title}`} />
                   <div>
                     <h3>{f.title}</h3>
                     <p>{f.text}</p>

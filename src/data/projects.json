@@ -45,15 +45,18 @@
     "features": [
       {
         "title": "Édition simultanée",
-        "text": "Plusieurs utilisateurs écrivent dans la même note."
+        "text": "Plusieurs utilisateurs écrivent dans la même note.",
+        "image": ""
       },
       {
         "title": "Synchro instantanée",
-        "text": "Les changements arrivent sans rechargement."
+        "text": "Les changements arrivent sans rechargement.",
+        "image": ""
       },
       {
         "title": "Organisation",
-        "text": "Créer, ranger et retrouver ses notes."
+        "text": "Créer, ranger et retrouver ses notes.",
+        "image": ""
       }
     ],
     "techChoices": [
@@ -89,70 +92,91 @@
       "spot": "#9E2F26",
       "size": 0.82,
       "ring": false,
-      "model": "/projects/tfr.glb"
+      "model": "/projects/troisfoisrien/tfr.glb"
     },
-    "tagline": "Le site d'un collectif de scénographes et designers qui imagine et fabrique des projets culturels accessibles, créatifs,",
-    "taglineAccent": "ancrés dans le réel.",
-    "summary": "Une landing page pour Trois Fois Rien, un collectif de designers qui imagine et fabrique des projets culturels accessibles, créatifs et ancrés dans le réel.",
-    "role": "[Dév + intégration]",
-    "context": "[Client]",
-    "duration": "[X semaines]",
-    "team": "[…]",
-    "year": "[2025]",
+    "tagline": "Le site d'un collectif de ",
+    "taglineAccent": "scénographes et designers",
+    "summary": "Réalisation du site du collectif Trois Fois Rien, spécialisé dans la scénographie et le design d'espaces. Le site met en avant leurs projets et leur savoir-faire, avec un back-office complet qui leur permet de tout gérer en autonomie.",
+    "role": "UI/UX + Dev full-stack",
+    "context": "Client",
+    "duration": "1 an (V1 en ligne, V2 en cours)",
+    "team": "Solo",
+    "year": "2025",
     "stack": [
       "Next.js",
       "TypeScript",
       "React",
-      "NeonDB",
       "Prisma",
-      "Tailwind",
+      "NeonDB",
+      "Vercel Blob",
       "Framer Motion",
       "Figma"
     ],
     "links": {
-      "demo": "",
+      "demo": "https://www.collectiftroisfoisrien.fr/",
       "github": ""
     },
-    "preview": "/projects/troisfoisrien.png",
-    "cover": "/projects/troisfoisrien.png",
-    "intro": "Un site vitrine pour le collectif Trois Fois Rien. [Qui est le collectif, ce qu'il attendait du site.]",
-    "tasks": ["[Tâche 1]", "[Tâche 2]", "[Tâche 3]"],
-    "goal": "[L'objectif du site en une phrase.]",
+    "preview": "/projects/troisfoisrien/troisfoisrien.png",
+    "cover": "/projects/troisfoisrien/troisfoisrien.png",
+    "intro": "Le collectif Trois Fois Rien avait besoin d'un site vitrine pour présenter ses projets et son savoir-faire. J'ai porté le projet seul de bout en bout : les échanges avec le client, la conception UX/UI à partir de leur charte graphique, puis le développement front et back, l'hébergement et la sécurisation.",
+    "tasks": [
+      "Échanges avec le client et recueil des besoins",
+      "Conception des maquettes UX/UI dans Figma à partir de la charte graphique",
+      "Développement full-stack du site et du back-office",
+      "Hébergement, sécurisation et référencement"
+    ],
+    "goal": "Donner au collectif une vitrine fidèle à son identité, qu'il peut faire évoluer seul grâce à un back-office complet.",
     "features": [
       {
-        "title": "[Fonction 1]",
-        "text": "[Une phrase.]"
+        "title": "Back-office complet",
+        "text": "Le collectif gère lui-même tous les textes et toutes les images du site, sans toucher au code.",
+        "image": "/projects/troisfoisrien/backoffice.png"
       },
       {
-        "title": "[Fonction 2]",
-        "text": "[Une phrase.]"
+        "title": "Projets et galeries",
+        "text": "Chaque projet a sa propre page, avec une description, ses informations clés et une galerie photo.",
+        "image": "/projects/troisfoisrien/gallerie.png"
+      },
+      {
+        "title": "Formulaire de contact",
+        "text": "Les messages sont enregistrés en base, consultables depuis le back-office et envoyés par e-mail au collectif.",
+        "image": "/projects/troisfoisrien/contact.png"
       },
       {
         "title": "Animations",
-        "text": "[Ce que Framer Motion apporte.]"
+        "text": "Framer Motion gère toutes les animations du site, des apparitions au scroll aux cartes de l'équipe qui se retournent, pour une navigation vivante qui reste légère.",
+        "image": "/projects/troisfoisrien/animation.png"
       }
     ],
     "techChoices": [
       {
         "tech": "Next.js",
-        "why": "[Pourquoi]"
+        "why": "Le rendu côté serveur améliore le référencement, et un seul framework suffit pour le site public, le back-office et l'API."
       },
       {
         "tech": "Prisma + NeonDB",
-        "why": "[Pourquoi]"
+        "why": "Une base PostgreSQL serverless, simple à héberger, et un ORM typé qui sécurise l'accès aux données des projets, des contenus et des messages."
+      },
+      {
+        "tech": "Vercel Blob",
+        "why": "Un stockage d'images intégré à l'hébergement, pour que le collectif puisse uploader ses photos directement depuis le back-office."
       },
       {
         "tech": "Framer Motion",
-        "why": "[Pourquoi]"
+        "why": "Une bibliothèque d'animation déclarative qui s'intègre naturellement à React et permet des transitions fluides sans alourdir le code."
       }
     ],
     "challenge": {
-      "problem": "[Le défi principal.]",
-      "solution": "[La solution.]"
+      "problem": "Le site repose sur beaucoup de photos haute qualité, ce qui pèse lourd sur la taille des pages et la consommation énergétique, alors que le collectif défend une démarche sobre. Le référencement devait aussi être soigné pour qu'on trouve le collectif en ligne.",
+      "solution": "J'ai mis en place une optimisation des images (compression, formats modernes, tailles adaptées à l'écran) pour réduire leur poids sans perte visible. Pour le SEO, j'ai travaillé les métadonnées, le rendu serveur et la structure des pages."
     },
-    "result": "[Le résultat.]",
-    "learned": "[L'apprentissage.]",
-    "gallery": ["", "", ""]
+    "result": "Le site est en ligne et le collectif le met à jour en totale autonomie. Une V2 est en cours de développement pour faire évoluer le site avec eux.",
+    "learned": "Ce projet m'a appris à gérer une relation client de A à Z, du recueil des besoins à la mise en production. J'ai aussi appris à concevoir en tenant compte de la sobriété numérique, en particulier sur l'optimisation des images et le référencement.",
+    "gallery": [
+      "/projects/troisfoisrien/gallerie1.png",
+      "/projects/troisfoisrien/gallerie2.png",
+      "/projects/troisfoisrien/gallerie3.png"
+    ]
   },
   {
     "enabled": false,
@@ -188,15 +212,18 @@
     "features": [
       {
         "title": "Rappels",
-        "text": "[Une phrase.]"
+        "text": "[Une phrase.]",
+        "image": ""
       },
       {
         "title": "Statistiques",
-        "text": "[Une phrase.]"
+        "text": "[Une phrase.]",
+        "image": ""
       },
       {
         "title": "Graphiques",
-        "text": "[Une phrase.]"
+        "text": "[Une phrase.]",
+        "image": ""
       }
     ],
     "techChoices": [
@@ -255,15 +282,18 @@
     "features": [
       {
         "title": "Mini-jeux",
-        "text": "[Une phrase.]"
+        "text": "[Une phrase.]",
+        "image": ""
       },
       {
         "title": "Plateau VR",
-        "text": "[Une phrase.]"
+        "text": "[Une phrase.]",
+        "image": ""
       },
       {
         "title": "Progression",
-        "text": "[Une phrase.]"
+        "text": "[Une phrase.]",
+        "image": ""
       }
     ],
     "techChoices": [
@@ -326,15 +356,18 @@
     "features": [
       {
         "title": "Incarner Zippy",
-        "text": "[Le principe de jeu.]"
+        "text": "[Le principe de jeu.]",
+        "image": ""
       },
       {
         "title": "Malwares & phishing",
-        "text": "Les ennemis : malwares et mails frauduleux."
+        "text": "Les ennemis : malwares et mails frauduleux.",
+        "image": ""
       },
       {
         "title": "Prévention",
-        "text": "[Comment le message passe.]"
+        "text": "[Comment le message passe.]",
+        "image": ""
       }
     ],
     "techChoices": [
