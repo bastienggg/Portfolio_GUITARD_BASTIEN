@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { pad, planetHref, projects, reportHref, statusLabel, total, wrapIndex } from "@/lib/projects";
 import { LinkButton, Placeholder, StatusDot, WinDots } from "../ui/bits";
 import { ReportPlanet } from "./ReportPlanet";
@@ -234,6 +235,11 @@ export function MissionReport({ index, active, go }: MissionReportProps) {
           <span className="sub">{nx.summary}</span>
         </span>
       </button>
+
+      <footer className="r-legal">
+        <Link href="/mentions-legales">Mentions légales</Link>
+        <Link href="/confidentialite">Confidentialité</Link>
+      </footer>
     </>
   );
 }

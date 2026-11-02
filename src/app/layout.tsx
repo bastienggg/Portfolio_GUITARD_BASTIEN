@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, JetBrains_Mono, Schoolbell } from "next/font/google";
+import { Analytics } from "@/components/consent/Analytics";
+import { CookieBanner } from "@/components/consent/CookieBanner";
 import { profile } from "@/data/profile";
 import "./globals.css";
 
@@ -143,6 +145,8 @@ export default function RootLayout({
       </head>
       <body>
         {children}
+        <CookieBanner />
+        <Analytics />
       </body>
     </html>
   );

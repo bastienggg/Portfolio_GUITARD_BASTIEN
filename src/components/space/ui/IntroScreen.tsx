@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { forwardRef } from "react";
 import { profile } from "@/data/profile";
 import { total } from "@/lib/projects";
@@ -52,6 +53,14 @@ export const IntroScreen = forwardRef<HTMLButtonElement, IntroScreenProps>(funct
             <path d="M3 19a2 2 0 0 0 2 2h1v-6H3z" />
           </svg>
           Expérience sonore
+        </span>
+        <span className="intro-legal">
+          <Link href="/mentions-legales" tabIndex={gone ? -1 : 0}>
+            Mentions légales
+          </Link>
+          <Link href="/confidentialite" tabIndex={gone ? -1 : 0}>
+            Confidentialité
+          </Link>
         </span>
         <button className="mute-enter" onClick={() => onEnter(false)} tabIndex={gone ? -1 : 0}>
           Sans le son →

@@ -26,6 +26,8 @@ All pages live in the `src/app/(space)/` route group, whose `layout.tsx` renders
 
 `SpaceShell` derives `view` (`intro | system | focus | report`) and the current project index from `usePathname()`, and sets `data-view` / `data-mode` on `#app`; show/hide transitions are pure CSS keyed on those attributes (`globals.css`). `/portfolio3d` redirects to `/` (`next.config.ts`).
 
+The legal pages (`/mentions-legales`, `/confidentialite`) live in a separate `src/app/(legal)/` group: plain server-rendered reading pages, without the 3D shell. Google Analytics (`components/consent/Analytics.tsx`) only loads after the user accepts the cookie banner (`CookieBanner.tsx`, choice stored in localStorage for 6 months by `consent.ts`); both are mounted in the root layout and disabled while `profile.gaId` is empty.
+
 ### Data flow
 
 - `src/data/projects.json` is the single source of truth (typed by `src/types/project.ts`, helpers in `src/lib/projects.ts`). Adding an entry adds a planet, a list row, a HUD step and a report page; `"enabled": false` hides a project everywhere (filtered in `lib/projects.ts`, its URLs 404). Each planet renders its `.glb` model from `planet.model` (in `public/projects/`, auto-scaled to `planet.size` by `scene/GlbModel.tsx`, also shown spinning at the top of the report); without a model it falls back to a generated low-poly sphere using `planet.color`/`spot`. `color` is still used for the list dots (and as fallback in the "next mission" block). The sun is `public/projects/soleil.glb`; empty `preview`/`cover`/`gallery` entries render hatched placeholders, empty `links.demo`/`links.github` render disabled buttons.

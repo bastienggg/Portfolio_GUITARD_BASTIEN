@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { pad, planetHref, projects } from "@/lib/projects";
 import type { View } from "../sceneState";
 
@@ -44,6 +45,10 @@ export function TopBar({ view, cur, musicOn, onToggleMusic, go }: TopBarProps) {
       </nav>
 
       <div className="top-right">
+        <Link href="/mentions-legales" className="top-legal" aria-label="Mentions légales">
+          <span className="long">Mentions légales</span>
+          <span className="short" aria-hidden="true">Légal</span>
+        </Link>
         <button
           className="sound"
           aria-pressed={musicOn}
