@@ -37,7 +37,8 @@ export interface Project {
   intro: string;
   tasks: string[];
   goal: string;
-  features: { title: string; text: string }[];
+  /** Cartes « La solution » : image = chemin dans public/ (vide = placeholder) */
+  features: { title: string; text: string; image?: string }[];
   techChoices: { tech: string; why: string }[];
   challenge: { problem: string; solution: string };
   result: string;
