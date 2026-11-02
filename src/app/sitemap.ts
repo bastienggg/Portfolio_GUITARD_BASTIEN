@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { projects } from "@/lib/projects";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://bastienguitard.fr";
@@ -10,11 +11,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
-    {
-      url: `${baseUrl}/portfolio3d`,
+    ...projects.map((p) => ({
+      url: `${baseUrl}/projets/${p.slug}`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
   ];
 }
