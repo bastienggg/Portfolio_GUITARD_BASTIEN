@@ -1,6 +1,6 @@
 [
   {
-    "enabled": true,
+    "enabled": false,
     "slug": "dot-txt",
     "title": "Dot TXT",
     "kind": "temps réel",
@@ -76,11 +76,7 @@
     },
     "result": "[Où en est le projet, ce qui fonctionne.]",
     "learned": "[Ton apprentissage principal, et ce que tu ferais différemment.]",
-    "gallery": [
-      "",
-      "",
-      ""
-    ]
+    "gallery": ["", "", ""]
   },
   {
     "enabled": true,
@@ -95,9 +91,9 @@
       "ring": false,
       "model": "/projects/tfr.glb"
     },
-    "tagline": "Le site d'un collectif qui fabrique des projets culturels",
+    "tagline": "Le site d'un collectif de scénographes et designers qui imagine et fabrique des projets culturels accessibles, créatifs,",
     "taglineAccent": "ancrés dans le réel.",
-    "summary": "Un site de présentation pour Trois Fois Rien, un collectif de designers qui imagine et fabrique des projets culturels accessibles, créatifs et ancrés dans le réel.",
+    "summary": "Une landing page pour Trois Fois Rien, un collectif de designers qui imagine et fabrique des projets culturels accessibles, créatifs et ancrés dans le réel.",
     "role": "[Dév + intégration]",
     "context": "[Client]",
     "duration": "[X semaines]",
@@ -120,11 +116,7 @@
     "preview": "/projects/troisfoisrien.png",
     "cover": "/projects/troisfoisrien.png",
     "intro": "Un site vitrine pour le collectif Trois Fois Rien. [Qui est le collectif, ce qu'il attendait du site.]",
-    "tasks": [
-      "[Tâche 1]",
-      "[Tâche 2]",
-      "[Tâche 3]"
-    ],
+    "tasks": ["[Tâche 1]", "[Tâche 2]", "[Tâche 3]"],
     "goal": "[L'objectif du site en une phrase.]",
     "features": [
       {
@@ -160,14 +152,10 @@
     },
     "result": "[Le résultat.]",
     "learned": "[L'apprentissage.]",
-    "gallery": [
-      "",
-      "",
-      ""
-    ]
+    "gallery": ["", "", ""]
   },
   {
-    "enabled": true,
+    "enabled": false,
     "slug": "habitz",
     "title": "Ha'Bitz",
     "kind": "app habitudes",
@@ -187,13 +175,7 @@
     "duration": "[X semaines]",
     "team": "[…]",
     "year": "[2025]",
-    "stack": [
-      "Next.js",
-      "TypeScript",
-      "React",
-      "NeonDB",
-      "Prisma"
-    ],
+    "stack": ["Next.js", "TypeScript", "React", "NeonDB", "Prisma"],
     "links": {
       "demo": "https://habit-tracker-beige-psi.vercel.app/",
       "github": "https://github.com/bastienggg/Habit_Tracker"
@@ -201,11 +183,7 @@
     "preview": "/projects/habittracker.png",
     "cover": "/projects/habittracker.png",
     "intro": "Une app pour définir, suivre et analyser ses habitudes quotidiennes. [Le cadre et pourquoi.]",
-    "tasks": [
-      "[Tâche 1]",
-      "[Tâche 2]",
-      "[Tâche 3]"
-    ],
+    "tasks": ["[Tâche 1]", "[Tâche 2]", "[Tâche 3]"],
     "goal": "[L'objectif en une phrase.]",
     "features": [
       {
@@ -241,14 +219,10 @@
     },
     "result": "[Le résultat.]",
     "learned": "[L'apprentissage.]",
-    "gallery": [
-      "",
-      "",
-      ""
-    ]
+    "gallery": ["", "", ""]
   },
   {
-    "enabled": true,
+    "enabled": false,
     "slug": "let-him-quizz",
     "title": "Let Him Quizz",
     "kind": "jeu VR",
@@ -268,14 +242,7 @@
     "duration": "[X semaines]",
     "team": "[…]",
     "year": "[2024]",
-    "stack": [
-      "Three.js",
-      "A-Frame",
-      "WebGL",
-      "JavaScript",
-      "HTML",
-      "CSS"
-    ],
+    "stack": ["Three.js", "A-Frame", "WebGL", "JavaScript", "HTML", "CSS"],
     "links": {
       "demo": "https://lethimquiz.bastienguitard.fr",
       "github": "https://github.com/bastienggg/Let_him_quizz"
@@ -283,11 +250,7 @@
     "preview": "/projects/lethimquizz.png",
     "cover": "/projects/lethimquizz.png",
     "intro": "Un jeu VR inspiré des jeux télé pour apprendre l'anglais. [Le cadre et pourquoi.]",
-    "tasks": [
-      "[Tâche 1]",
-      "[Tâche 2]",
-      "[Tâche 3]"
-    ],
+    "tasks": ["[Tâche 1]", "[Tâche 2]", "[Tâche 3]"],
     "goal": "[L'objectif en une phrase.]",
     "features": [
       {
@@ -323,14 +286,10 @@
     },
     "result": "Jeu terminé. [Retours, contexte de présentation.]",
     "learned": "[L'apprentissage.]",
-    "gallery": [
-      "",
-      "",
-      ""
-    ]
+    "gallery": ["", "", ""]
   },
   {
-    "enabled": true,
+    "enabled": false,
     "slug": "zippy-the-mouse",
     "title": "Zippy the Mouse",
     "kind": "jeu 2D",
@@ -350,13 +309,7 @@
     "duration": "[X semaines]",
     "team": "[…]",
     "year": "[2024]",
-    "stack": [
-      "JavaScript",
-      "HTML",
-      "CSS",
-      "p5play",
-      "Tailwind"
-    ],
+    "stack": ["JavaScript", "HTML", "CSS", "p5play", "Tailwind"],
     "links": {
       "demo": "https://zippy.bastienguitard.fr/",
       "github": "https://github.com/bastienggg/ZippyTheMouse"
@@ -404,10 +357,6 @@
     },
     "result": "Jeu terminé et jouable en ligne. [Retours.]",
     "learned": "[L'apprentissage.]",
-    "gallery": [
-      "",
-      "",
-      ""
-    ]
+    "gallery": ["", "", ""]
   }
 ]
